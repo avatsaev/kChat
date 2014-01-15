@@ -82,6 +82,7 @@ socket.on("connection", function (client) {
 		
 		//console.dir(socket.sockets);
 		//{ '42OslOM5p-TdRbypq9CY': 'ust' }
+		
         //socket.sockets.emit("chat", people[client.id], msg);
 
     });
