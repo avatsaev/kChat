@@ -126,7 +126,6 @@ function tumbler(frq, event, client, params){
 			if(people[userID]["frq"]==frq){
 				if(userID!=client.id){
 					socket.sockets.sockets[userID].emit("update", params.msg);
-					tumbler(null,"broadcast",null, {msg:"server is full"});
 				}
 			}
 			
