@@ -5,7 +5,9 @@
 	<script src="http://localhost:5000/socket.io/socket.io.js"></script>
 	<script src="javascripts/jquery.js"></script>
 	<script src="javascripts/bootstrap.js"></script>
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
+	<script type="text/javascript" src="http://chengxianga2008.github.com/node-cryptojs-aes/client/aes.js"></script>
+	<script type="text/javascript" src="http://chengxianga2008.github.com/node-cryptojs-aes/client/jsonformatter.js"></script>
+	<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css">
 	<script>
 	
@@ -72,7 +74,11 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong>: " +msg + "</li>");
+				msg=JSON.parse(msg);
+				console.log(msg.enc);
+			    var decr= CryptoJS.AES.decrypt(msg.enc, msg.k, { format: JsonFormatter });
+			    var dcrmsg = CryptoJS.enc.Utf8.stringify(decr);
+				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong>: " +dcrmsg + "</li>");
 			}
 		});
 
