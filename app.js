@@ -55,7 +55,10 @@ socket.on("connection", function (client) {
 
 		
 		var userData = JSON.parse(data);
-		userData["usr"]= userData["usr"].substring(0, 20);
+		
+		
+		userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
+		userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
 		
 		//console.dir("frequency: "+userData["frq"]);
 		//console.dir("user: "+userData["usr"]);
@@ -76,8 +79,12 @@ socket.on("connection", function (client) {
 		
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
+		
+		
+		inData["frq"]= escapeHtml(inData["frq"]).substring(0, 32);
+		inData["msg"]= escapeHtml(inData["msg"]).substring(0, 512);
 
-		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]).substring(0, 512) });
+		tumbler(inData["frq"], "chat", client, {msg:inData["msg"] });
 		
 		
 		//console.dir(socket.sockets);

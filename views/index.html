@@ -3,7 +3,7 @@
 <head>
 	<script src="http://kawachat.herokuapp.com/socket.io/socket.io.js"></script>
 	<script src="javascripts/jquery.js"></script>
-	<script src="javascritpts/bootstrap.js"></script>
+	<script src="javascripts/bootstrap.js"></script>
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css">
 	<script>
 	
@@ -24,7 +24,7 @@
 			var name = $("#name").val();
 			var frq = $("#frq").val();
 			
-			var userData = { "usr" : escapeHtml(name), "frq": frq };
+			var userData = { "usr" : name, "frq": frq };
 
 			if (name != "" || frq != "") {
 				socket.emit("join", JSON.stringify(userData) );
@@ -68,7 +68,7 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong> says: " +escapeHtml(msg) + "</li>");
+				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong> says: " +msg + "</li>");
 			}
 		});
 
@@ -81,13 +81,13 @@
 
 		$("#send").click(function(){
 			
-			var msg = escapeHtml($("#msg").val()).substring(0, 512);
+			var msg = $("#msg").val();
 
 			var frq = $("#frq").val();
 		
 			var outData = { "msg" : msg, "frq": frq };
 			
-			$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " + msg + "</li>");
+			$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
 			
 			socket.emit("send", JSON.stringify(outData));
 			
@@ -97,7 +97,8 @@
 
 		$("#msg").keypress(function(e){
 			if(e.which == 13) {
-				var msg = escapeHtml($("#msg").val()).substring(0, 512);
+				
+				var msg = $("#msg").val();
 
 				var frq = $("#frq").val();
 		
@@ -105,7 +106,7 @@
 				
 				socket.emit("send", JSON.stringify(outData));
 				$("#msg").val("");
-				$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " + msg + "</li>");
+				$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " +  escapeHtml(msg).substring(0, 512) + "</li>");
 			}
 		});
 
