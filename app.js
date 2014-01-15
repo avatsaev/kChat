@@ -96,7 +96,10 @@ socket.on("connection", function (client) {
 
     client.on("disconnect", function(){
 		
-		tumbler(people[client.id]["frq"], "update", client, { msg: (people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz") } );
+		
+		if(people[client.id]!=undefined && people[client.id]["frq"]!=undefined && people[client.id]["usr"]!=undefined){
+			tumbler(people[client.id]["frq"], "update", client, { msg: (people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz") } );
+		}
 
         //socket.sockets.emit("update", people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz");
 
