@@ -72,7 +72,7 @@ socket.on("connection", function (client) {
         client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
 
 		tumbler(userData["frq"], "update", client, {msg: (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz") });
-        tumbler(null, "broadcast",null, {msg, "SYSTEM broadcast: "+Object.keys(people).length+" people connected on all frequencies."});
+        tumbler(null, "broadcast",null, {msg: "SYSTEM broadcast: "+Object.keys(people).length+" people connected on all frequencies."});
         //socket.sockets.emit("update-people", people);
 		
     });
