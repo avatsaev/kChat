@@ -149,7 +149,7 @@ function tumbler(frq, event, client, params){
 		
 	}
 	
-	if(event=="boradcast"){
+	if(event=="broadcast"){
 		
 
 			socket.sockets.emit("update", params.msg);
