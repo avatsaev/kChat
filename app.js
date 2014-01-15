@@ -151,17 +151,17 @@ function tumbler(frq, event, client, params){
 	
 	if(event=="update-people"){
 		
-		msg = "Users on this frequency: ";
+		msg = "---Users on this frequency: ";
 		for (var userID in people) {
 			
 			if(people[userID]["frq"]==frq){
-				msg=msg+""+people[userID]["usr"]+"\ "
+				msg=msg+"/"+people[userID]["usr"]+"/ "
 			}
 			
 		}
 		
 		for (var userID in people) {
-			if(userID!=client.id){
+			if(people[userID]["frq"]==frq){
 				socket.sockets.sockets[userID].emit("update", msg);
 			}
 		}
