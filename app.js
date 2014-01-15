@@ -155,7 +155,7 @@ function tumbler(frq, event, client, params){
 		for (var userID in people) {
 			
 			if(people[userID]["frq"]==frq){
-				msg=msg+"/"+people[userID]["usr"]+"/ "
+				msg=msg+""+people[userID]["usr"]+" - "
 			}
 			
 		}
