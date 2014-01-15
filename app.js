@@ -60,6 +60,10 @@ socket.on("connection", function (client) {
 		userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
 		userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
 		
+		console.dir("frequency: "+userData["frq"]);
+		console.dir("message: "+userData["usr"]);
+		
+		
 		//console.dir("frequency: "+userData["frq"]);
 		//console.dir("user: "+userData["usr"]);
 		
@@ -68,7 +72,7 @@ socket.on("connection", function (client) {
         client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
 
 		tumbler(userData["frq"], "update", client, {msg: (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz") });
-        
+        tumbler(null, "broadcast",null, {msg, "SYSTEM broadcast: "+Object.keys(people).length+" people connected on all frequencies."});
         //socket.sockets.emit("update-people", people);
 		
     });
@@ -77,12 +81,14 @@ socket.on("connection", function (client) {
 		//console.dir(""+data);
 		var inData = JSON.parse(data);
 		
-		console.dir("frequency: "+inData["frq"]);
-		console.dir("message: "+inData["msg"]);
+		
 		
 		
 		inData["frq"]= escapeHtml(inData["frq"]).substring(0, 32);
 		inData["msg"]= escapeHtml(inData["msg"]).substring(0, 512);
+		
+		console.dir("frequency: "+inData["frq"]);
+		console.dir("message: "+inData["msg"]);
 
 		tumbler(inData["frq"], "chat", client, {msg:inData["msg"] });
 		
@@ -97,7 +103,7 @@ socket.on("connection", function (client) {
     client.on("disconnect", function(){
 		
 		
-		if(people[client.id]!=undefined && people[client.id]["frq"]!=undefined && people[client.id]["usr"]!=undefined){
+		if(people[client.id]!=undefined){
 			tumbler(people[client.id]["frq"], "update", client, { msg: (people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz") } );
 		}
 
@@ -144,11 +150,11 @@ function tumbler(frq, event, client, params){
 	}
 	
 	if(event=="boradcast"){
-		for (var userID in people) {
+		
 
 			socket.sockets.emit("update", params.msg);
 			
-		}
+		
 	}
 	
 	
