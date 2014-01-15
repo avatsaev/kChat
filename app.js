@@ -77,7 +77,7 @@ socket.on("connection", function (client) {
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
 
-		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]).substring(0, 100) });
+		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]).substring(0, 512) });
 		
 		
 		//console.dir(socket.sockets);
