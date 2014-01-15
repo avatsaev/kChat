@@ -76,7 +76,7 @@ socket.on("connection", function (client) {
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
 
-		tumbler(inData["frq"], "chat", client, {msg: inData["msg"] });
+		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]) });
 		
 		
 		//console.dir(socket.sockets);
@@ -122,7 +122,7 @@ function tumbler(frq, event, client, params){
 			if(userID!=client.id){
 				
 				if(people[userID]["frq"]==frq){
-					socket.sockets.sockets[userID].emit("chat", people[client.id]["usr"], escapeHtml(params.msg));
+					socket.sockets.sockets[userID].emit("chat", people[client.id]["usr"], params.msg);
 				}
 		
 			}
