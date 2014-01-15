@@ -28,7 +28,7 @@
 			var name = $("#name").val();
 			var frq = $("#frq").val();
 			
-			var userData = { "usr" : escapeHtml(name), "frq": escapeHtml(frq) };
+			var userData = { "usr" : escapeHtml(name), "frq": frq };
 
 			if (name != "" || frq != "") {
 				socket.emit("join", JSON.stringify(userData) );
