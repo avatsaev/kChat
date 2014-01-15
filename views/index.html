@@ -72,7 +72,7 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong> says: " + msg + "</li>");
+				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong> says: " +escapeHtml(msg) + "</li>");
 			}
 		});
 
@@ -84,6 +84,7 @@
 
 
 		$("#send").click(function(){
+			
 			var msg = $("#msg").val();
 
 			var frq = $("#frq").val();
@@ -95,6 +96,7 @@
 			socket.emit("send", JSON.stringify(outData));
 			
 			$("#msg").val("");
+			
 		});
 
 		$("#msg").keypress(function(e){
