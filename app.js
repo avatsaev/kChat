@@ -55,9 +55,10 @@ socket.on("connection", function (client) {
 
 		
 		var userData = JSON.parse(data);
+		userData["usr"]= userData["usr"].substring(0, 20);
 		
-		console.dir("frequency: "+userData["frq"]);
-		console.dir("user: "+userData["usr"]);
+		//console.dir("frequency: "+userData["frq"]);
+		//console.dir("user: "+userData["usr"]);
 		
         people[client.id] = userData;
 		
@@ -76,7 +77,7 @@ socket.on("connection", function (client) {
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
 
-		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]).trunc(100) });
+		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]).substring(0, 100) });
 		
 		
 		//console.dir(socket.sockets);
@@ -145,9 +146,4 @@ function tumbler(frq, event, client, params){
 function escapeHtml(text) {
   return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
-
-String.prototype.trunc = String.prototype.trunc ||
-      function(n){
-          return this.length>n ? this.substr(0,n-1)+'&hellip;' : this;
-      };
 
