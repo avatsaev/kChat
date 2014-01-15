@@ -184,6 +184,7 @@ function tumbler(frq, event, client, params){
 }
 
 function escapeHtml(text) {
+  console.log("REPLACE: "+text);
   return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
 
