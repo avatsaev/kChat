@@ -13,7 +13,7 @@
 
 	
 	$(document).ready(function(){
-		var socket = io.connect("http://kawachat.herokuapp.com");
+		var socket = io.connect("kawachat.herokuapp.com");
 		$("#chat").hide();
 		$("#name").focus();
 		$("form").submit(function(event){
