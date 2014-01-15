@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 var people = {};
-var port = 5000;
+var port = process.env.PORT || 5000;
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');

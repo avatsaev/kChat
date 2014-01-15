@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<script src="http://192.168.0.3:5000/socket.io/socket.io.js"></script>
+	<script src="http://kawachat.herokuapp.com/socket.io/socket.io.js"></script>
 	<script src="javascripts/jquery.js"></script>
 	<script src="javascritpts/bootstrap.js"></script>
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css">
 	<script>
 	$(document).ready(function(){
-		var socket = io.connect("192.168.0.3:5000");
+		var socket = io.connect("http://kawachat.herokuapp.com");
 		$("#chat").hide();
 		$("#name").focus();
 		$("form").submit(function(event){
