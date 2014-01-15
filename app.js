@@ -122,7 +122,7 @@ function tumbler(frq, event, client, params){
 			if(userID!=client.id){
 				
 				if(people[userID]["frq"]==frq){
-					socket.sockets.sockets[userID].emit("chat", people[client.id]["usr"], params.msg);
+					socket.sockets.sockets[userID].emit("chat", people[client.id]["usr"], escapeHtml(params.msg));
 				}
 		
 			}
@@ -140,5 +140,14 @@ function tumbler(frq, event, client, params){
 	}
 	
 	
+}
+
+function escapeHtml(text) {
+  return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
 }
 
