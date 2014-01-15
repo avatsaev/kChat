@@ -72,7 +72,8 @@ socket.on("connection", function (client) {
         client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
 
 		tumbler(userData["frq"], "update", client, {msg: (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz") });
-        tumbler(null, "broadcast",null, {msg: "<span style='color:blue'><b>System broadcast:</b> "+Object.keys(people).length+" users connected on server.</span>"});
+		tumbler(userData["frq"], "update-people", client, null);
+        tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(people).length+" users connected on server."});
         //socket.sockets.emit("update-people", people);
 		
     });
@@ -148,6 +149,27 @@ function tumbler(frq, event, client, params){
 		
 	}
 	
+	if(event=="update-people"){
+		
+		msg = "Users on this frequency: ";
+		for (var userID in people) {
+			
+			if(people[userID]["frq"]==frq){
+				msg=msg+""+people[userID]["usr"]+"\ "
+			}
+			
+		}
+		
+		for (var userID in people) {
+			if(userID!=client.id){
+				socket.sockets.sockets[userID].emit("update", msg);
+			}
+		}
+		
+		
+		
+	}
+	
 	if(event=="broadcast"){
 		
 
@@ -155,6 +177,8 @@ function tumbler(frq, event, client, params){
 			
 		
 	}
+	
+	
 	
 	
 }
