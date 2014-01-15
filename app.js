@@ -76,7 +76,7 @@ socket.on("connection", function (client) {
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
 
-		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]) });
+		tumbler(inData["frq"], "chat", client, {msg: escapeHtml(inData["msg"]).trunc(100) });
 		
 		
 		//console.dir(socket.sockets);
@@ -145,4 +145,9 @@ function tumbler(frq, event, client, params){
 function escapeHtml(text) {
   return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
+
+String.prototype.trunc = String.prototype.trunc ||
+      function(n){
+          return this.length>n ? this.substr(0,n-1)+'&hellip;' : this;
+      };
 

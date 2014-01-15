@@ -11,6 +11,12 @@
 	  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 	}
 	
+	String.prototype.trunc = String.prototype.trunc ||
+	      function(n){
+	          return this.length>n ? this.substr(0,n-1)+'&hellip;' : this;
+	      };
+	
+	
 	$(document).ready(function(){
 		var socket = io.connect("http://kawachat.herokuapp.com");
 		$("#chat").hide();
@@ -80,7 +86,7 @@
 
 		$("#send").click(function(){
 			
-			var msg = escapeHtml($("#msg").val());
+			var msg = escapeHtml($("#msg").val()).trunc(100);
 
 			var frq = $("#frq").val();
 		
@@ -96,7 +102,7 @@
 
 		$("#msg").keypress(function(e){
 			if(e.which == 13) {
-				var msg = escapeHtml($("#msg").val());
+				var msg = escapeHtml($("#msg").val()).trunc(100);
 
 				var frq = $("#frq").val();
 		
