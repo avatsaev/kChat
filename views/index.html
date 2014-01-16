@@ -8,25 +8,31 @@
 	<title>KawaChat</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css">
+	
+	
 	<script>
+	
+	
 	var ready;
 	var window_focus;
 	
 	function escapeHtml(text) {
 	  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 	}
-	$(window).focus(function() {
-	    window_focus = true;
-		console.log("focus");
-		document.title = "KawaChat";
-	})
-	    .blur(function() {
-			console.log("!focus");
-	        window_focus = false;
-	});
+
 	
 	
 	$(document).ready(function(){
+		
+		$(window).focus(function() {
+		    window_focus = true;
+			console.log("focus");
+			document.title = "KawaChat";
+		})
+		    .blur(function() {
+				console.log("!focus");
+		        window_focus = false;
+		});
 		
 		
 		var socket = io.connect("kawachat.herokuapp.com");
@@ -87,6 +93,7 @@
 		socket.on("chat", function(who, msg){
 			if(ready) {
 				if(window_focus==true){
+					console.log("changing title...");
 					document.title = "(*) KawaChat";
 				}
 				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong>: " +msg + "</li>");
