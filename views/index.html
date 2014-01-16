@@ -14,7 +14,8 @@
 	
 	
 	var ready;
-	var window_focus;
+	var focus;
+	var messages=0;
 	
 	function escapeHtml(text) {
 	  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
@@ -28,10 +29,11 @@
 			document.title = "KawaChat"
 		    window_focus = true;
 			console.log("focus");
-			document.title = "KawaChat";
+			messages=0;
+			//document.title = "KawaChat";
 		
 		}).blur(function() {
-			document.title = "(*) KawaChat"
+			//document.title = "(*) KawaChat"
 			console.log("!focus");
 		    window_focus = false;
 		
@@ -95,9 +97,10 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				if(window_focus){
+				if(focus){
+					messages = messages+1;
 					console.log("changing title...");
-					document.title = "(*) KawaChat";
+					document.title = "("+messages+") KawaChat";
 				}
 				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong>: " +msg + "</li>");
 			}
