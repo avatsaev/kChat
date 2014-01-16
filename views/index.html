@@ -86,7 +86,7 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				if(window_focus){
+				if(window_focus==true){
 					document.title = "(*) KawaChat";
 				}
 				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong>: " +msg + "</li>");
