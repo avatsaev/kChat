@@ -34,7 +34,7 @@ if ('development' == app.get('env')) {
 
 
 app.get('/', function(req, res){
- // res.sendfile("views/index.html");
+  res.sendfile("views/index.html");
 });
 //app.get('/', routes.index);
 //app.get('/users', user.list);
