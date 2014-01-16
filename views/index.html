@@ -9,6 +9,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css">
 	<script>
+	var ready;
 	var window_focus;
 	
 	function escapeHtml(text) {
@@ -16,9 +17,11 @@
 	}
 	$(window).focus(function() {
 	    window_focus = true;
+		console.log("focus");
 		document.title = "KawaChat";
 	})
 	    .blur(function() {
+			console.log("!focus");
 	        window_focus = false;
 	});
 	
