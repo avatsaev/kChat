@@ -14,7 +14,7 @@
 	
 	
 	var ready;
-	var window_focus;
+	var window_focus=false;
 	
 	function escapeHtml(text) {
 	  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
@@ -25,13 +25,16 @@
 	$(document).ready(function(){
 		
 		$(window).focus(function() {
+			
 		    window_focus = true;
 			console.log("focus");
 			document.title = "KawaChat";
-		})
-		    .blur(function() {
-				console.log("!focus");
-		        window_focus = false;
+		
+		}).blur(function() {
+			
+			console.log("!focus");
+		    window_focus = false;
+		
 		});
 		
 		
@@ -92,7 +95,7 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				if(window_focus==true){
+				if(window_focus){
 					console.log("changing title...");
 					document.title = "(*) KawaChat";
 				}
