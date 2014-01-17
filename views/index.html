@@ -14,7 +14,7 @@
 	
 	
 	var ready;
-	var focus;
+	var app_focus;
 	var messages=0;
 	
 	function escapeHtml(text) {
@@ -27,7 +27,7 @@
 		
 		$(window).focus(function() {
 			document.title = "KawaChat"
-		    window_focus = true;
+		    app_focus = true;
 			console.log("focus");
 			messages=0;
 			//document.title = "KawaChat";
@@ -35,7 +35,7 @@
 		}).blur(function() {
 			//document.title = "(*) KawaChat"
 			console.log("!focus");
-		    window_focus = false;
+		    app_focus = false;
 		
 		});
 		
@@ -97,7 +97,7 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				if(focus){
+				if(app_focus){
 					messages = messages+1;
 					console.log("changing title...");
 					document.title = "("+messages+") KawaChat";
