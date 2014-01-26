@@ -1,162 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	
 	<script src="http://kawachat.herokuapp.com/socket.io/socket.io.js"></script>
-	<!--<script src="http://localhost:5000/socket.io/socket.io.js"></script>-->
+	
+	
+	<!--
+	<script src="http://192.168.0.17:5000/socket.io/socket.io.js"></script>
+	-->
 	<script src="javascripts/jquery.js"></script>
 	<script src="javascripts/bootstrap.js"></script>
+	<script src="javascripts/kc.js"></script>
+
 	<title>KawaChat</title>
+
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="stylesheets/kc.css">
 	
 	
-	<script>
-	
-	
-	var ready;
-	var app_focus;
-	var frq="1";
-	var usr="User_"+Math.floor(Math.random()*110000);
-	var messages=0;
-	
-	function escapeHtml(text) {
-	  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-	}
 
-	
-	
-	$(document).ready(function(){
-		
-		$(window).focus(function() {
-
-			document.title = "KawaChat"
-
-		    app_focus = true;
-			console.log("focus");
-			messages=0;
-		
-		}).blur(function() {
-			//document.title = "(*) KawaChat"
-			console.log("!focus");
-		    app_focus = false;
-		
-		});
-		
-		
-		var socket = io.connect("kawachat.herokuapp.com");
-		//var socket = io.connect("http://localhost:5000");
-		$("#chat").hide();
-		$("#name").focus();
-		$("form").submit(function(event){
-    		event.preventDefault();
-		});
-
-		$("#join").click(function(){
-
-
-			if ($("#name").val() != "") {
-
-				usr = $("#name").val();
-				
-			}
-
-			if( $("#frq").val() != ""){
-
-				frq = $("#frq").val();
-			}
-
-
-			var userData = { "usr" : usr, "frq": frq };
-
-			socket.emit("join", JSON.stringify(userData) );
-
-			$("#msgs").append("<li>Connecting...</li>");
-			$("#login").hide();
-			$("#chat").show();
-			$("#msg").focus();
-
-			ready = true;
-
-
-		});
-
-
-
-
-		$("#send").click(function(){
-			
-			sendMsg();
-			
-		});
-
-		$("#msg").keypress(function(e){
-			if(e.which == 13) {
-				
-				sendMsg();
-
-			}
-		});
-
-
-		function sendMsg(){
-
-			var msg = $("#msg").val();
-
-			if(msg=="") return;
-
-			$("#msgs").append("<li><strong><span class='text-success'>"+usr+" (Me)</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
-			
-			var outData = { "msg" : msg, "frq": frq };
-			socket.emit("send", JSON.stringify(outData));
-			
-			$("#msg").val("");
-
-		}
-
-
-
-
-
-		//===========================================================================
-
-
-
-		socket.on("update", function(msg) {
-			if(ready)
-				$("#msgs").append("<li>" + msg + "</li>");
-		})
-
-		//socket.on("update-people", function(people){
-		//	if(ready) {
-		//		$("#people").empty();
-		//		$.each(people, function(clientid, name) {
-		//			$('#people').append("<li>" + name + "</li>");
-		//		});
-		//	}
-		//});
-
-		socket.on("chat", function(who, msg){
-			if(ready) {
-				if(app_focus==true){
-					messages = messages+1;
-					console.log("changing title...");
-					document.title = "("+messages+") KawaChat";
-				}
-				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong>: " +msg + "</li>");
-			}
-		});
-
-		socket.on("disconnect", function(){
-			$("#msgs").append("<li><strong><span class='text-warning'>The server is not available</span></strong></li>");
-			$("#msg").attr("disabled", "disabled");
-			$("#send").attr("disabled", "disabled");
-		});
-
-
-	
-
-	});
-</script>
 
 
 <body>
@@ -169,16 +32,18 @@
   	<ul id="msgs" class="unstyled"></ul>
   </div>
 </div>
-<div class="row">
-	<div class="span5 offset2" id="login">
-		<form class="form-inline">
-  			<input type="text" class="input-small" placeholder="Your name..." id="name">
-			<input type="text" class="input-small" placeholder="Frequency (MHz)..." id="frq">
-			<input type="button" name="join" id="join" value="Join" class="btn btn-primary">
-			
-  			
 
+
+<div class="row">
+	<div class="span5 offset2 centered" id="login">
+		<img src="images/logo@2x.png" id="login_logo">
+		<span>KawaChat</span>
+		<form class="form-inline">
+  			<input type="text" class="input-small" placeholder="Your name..." id="name"></br>
+			<input type="text" class="input-small" placeholder="Frequency (MHz)..." id="frq"></br>
+			<input type="button" name="join" id="join" value="Join" class="btn btn-primary">
 		</form>
+
 	</div>
 
 	<div class="span5 offset2" id="chat">

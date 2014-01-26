@@ -13,7 +13,7 @@ var path = require('path');
 var app = express();
 var server = app.listen(port);
 var socket = require('socket.io').listen(server); 
-console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+process.env.PORT);
+console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+port);
 // all environments
 //app.set('port', process.env.PORT || 5000);
 app.set('views', path.join(__dirname, 'views'));
