@@ -102,6 +102,8 @@
 
 			var msg = $("#msg").val();
 
+			if(msg=="") return;
+
 			$("#msgs").append("<li><strong><span class='text-success'>"+usr+" (Me)</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
 			
 			var outData = { "msg" : msg, "frq": frq };
