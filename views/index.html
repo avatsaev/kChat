@@ -15,6 +15,8 @@
 	
 	var ready;
 	var app_focus;
+	var frq="1";
+	var usr="User_"+Math.floor(Math.random()*110000);
 	var messages=0;
 	
 	function escapeHtml(text) {
@@ -26,11 +28,12 @@
 	$(document).ready(function(){
 		
 		$(window).focus(function() {
+
 			document.title = "KawaChat"
+
 		    app_focus = true;
 			console.log("focus");
 			messages=0;
-			//document.title = "KawaChat";
 		
 		}).blur(function() {
 			//document.title = "(*) KawaChat"
@@ -49,57 +52,68 @@
 		});
 
 		$("#join").click(function(){
-			
-			var name = $("#name").val();
-			var frq = $("#frq").val();
-			
-			var userData = { "usr" : name, "frq": frq };
+
 
 			if (name != "" || frq != "") {
 
-				socket.emit("join", JSON.stringify(userData) );
-				$("#msgs").append("<li>Connecting...</li>");
-				$("#login").hide();
-				$("#chat").show();
-				$("#msg").focus();
-				ready = true;
-			}
-		});
-		
-		$("#join").keypress(function(e){
-			if(e.which == 13) {
-				$("#msgs").append("<li>Connecting...</li>");
-				var name = $("#name").val();
-				var frq = $("#frq").val();
-			
-				var userData = { "usr" : name, "frq": frq };
-
-				if (name != "" || frq != "") {
-					socket.emit("join", JSON.stringify(userData) );
-					$("#login").hide();
-					$("#chat").show();
-					$("#msg").focus();
-					ready = true;
-				}
-			}
-		});
-		
-		$("#name").keypress(function(e){
-			if(e.which == 13) {
-				var name = $("#name").val();
-				var frq = $("#frq").val();
-			
-				var userData = { "usr" : name, "frq": frq };
+				usr = $("#name").val();
+				frq = $("#frq").val();
 				
-				if (name != "") {
-					socket.emit("join", JSON.stringify(userData));
-					ready = true;
-					$("#login").detach();
-					$("#chat").show();
-					$("#msg").focus();
-				}
+			}
+
+
+			var userData = { "usr" : usr, "frq": frq };
+
+			socket.emit("join", JSON.stringify(userData) );
+
+			$("#msgs").append("<li>Connecting...</li>");
+			$("#login").hide();
+			$("#chat").show();
+			$("#msg").focus();
+
+			ready = true;
+
+
+		});
+
+
+
+
+		$("#send").click(function(){
+			
+			sendMsg();
+			
+		});
+
+		$("#msg").keypress(function(e){
+			if(e.which == 13) {
+				
+				sendMsg();
+
 			}
 		});
+
+
+		function sendMsg(){
+
+			var msg = $("#msg").val();
+
+			$("#msgs").append("<li><strong><span class='text-success'>"+usr+" (Me)</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
+			
+			var outData = { "msg" : msg, "frq": frq };
+			socket.emit("send", JSON.stringify(outData));
+			
+			$("#msg").val("");
+
+		}
+
+
+
+
+
+		//===========================================================================
+
+
 
 		socket.on("update", function(msg) {
 			if(ready)
@@ -133,36 +147,7 @@
 		});
 
 
-		$("#send").click(function(){
-			
-			var msg = $("#msg").val();
-
-			var frq = $("#frq").val();
-		
-			var outData = { "msg" : msg, "frq": frq };
-			
-			$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
-			
-			socket.emit("send", JSON.stringify(outData));
-			
-			$("#msg").val("");
-			
-		});
-
-		$("#msg").keypress(function(e){
-			if(e.which == 13) {
-				
-				var msg = $("#msg").val();
-
-				var frq = $("#frq").val();
-		
-				var outData = { "msg" : msg, "frq": frq };
-				
-				socket.emit("send", JSON.stringify(outData));
-				$("#msg").val("");
-				$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " +  escapeHtml(msg).substring(0, 512) + "</li>");
-			}
-		});
+	
 
 	});
 </script>
