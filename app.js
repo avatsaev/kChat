@@ -55,10 +55,7 @@ socket.on("connection", function (client) {
 
 		
 		var userData = JSON.parse(data);
-		
-		
-		userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
-		userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
+
 
 		if (userData["usr"]==undefined) {
 			userData["usr"]="User_"+Math.random()*110000;
@@ -66,8 +63,10 @@ socket.on("connection", function (client) {
 
 		if (userData["frq"]==undefined) {
 				userData["frq"]="1";
-
 		}
+
+		userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
+		userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
 		
 		console.dir("frequency: "+userData["frq"]);
 		console.dir("message: "+userData["usr"]);
@@ -91,7 +90,7 @@ socket.on("connection", function (client) {
 		//console.dir(""+data);
 		var inData = JSON.parse(data);
 		
-		
+		if(inData["msg"] || inData["frq"]) return;
 		
 		
 		inData["frq"]= escapeHtml(inData["frq"]).substring(0, 32);
@@ -100,7 +99,7 @@ socket.on("connection", function (client) {
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
 
-		if(inData["msg"] || inData["frq"]) return;
+		
 
 		tumbler(inData["frq"], "chat", client, {msg:inData["msg"] });
 		
