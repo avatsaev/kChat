@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="http://kawachat.herokuapp.com/socket.io/socket.io.js"></script>
+	<script src="http://localhost:5000/socket.io/socket.io.js"></script>
+	<script src="javascripts/jquery.js"></script>
+	<script src="javascripts/bootstrap.js"></script>
+	<script type="text/javascript" src="http://chengxianga2008.github.com/node-cryptojs-aes/client/aes.js"></script>
+	<script type="text/javascript" src="http://chengxianga2008.github.com/node-cryptojs-aes/client/jsonformatter.js"></script>
+	<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1" />
+	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css">
+	<script>
+	
+	function escapeHtml(text) {
+	  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+	}
+
+	
+	$(document).ready(function(){
+		//var socket = io.connect("kawachat.herokuapp.com");
+		var socket = io.connect("http://localhost:5000");
+		$("#chat").hide();
+		$("#name").focus();
+		$("form").submit(function(event){
+    		event.preventDefault();
+		});
+
+		$("#join").click(function(){
+			$("#msgs").append("<li>Connecting...</li>");
+			var name = $("#name").val();
+			var frq = $("#frq").val();
+			
+			var userData = { "usr" : name, "frq": frq };
+
+			if (name != "" || frq != "") {
+				socket.emit("join", JSON.stringify(userData) );
+				$("#login").hide();
+				$("#chat").show();
+				$("#msg").focus();
+				ready = true;
+			}
+		});
+
+		$("#name").keypress(function(e){
+			if(e.which == 13) {
+				var name = $("#name").val();
+				var frq = $("#frq").val();
+			
+				var userData = { "usr" : name, "frq": frq };
+				
+				if (name != "") {
+					socket.emit("join", JSON.stringify(userData));
+					ready = true;
+					$("#login").detach();
+					$("#chat").show();
+					$("#msg").focus();
+				}
+			}
+		});
+
+		socket.on("update", function(msg) {
+			if(ready)
+				$("#msgs").append("<li>" + msg + "</li>");
+		})
+
+		//socket.on("update-people", function(people){
+		//	if(ready) {
+		//		$("#people").empty();
+		//		$.each(people, function(clientid, name) {
+		//			$('#people').append("<li>" + name + "</li>");
+		//		});
+		//	}
+		//});
+
+		socket.on("chat", function(who, msg){
+			if(ready) {
+				msg=JSON.parse(msg);
+				console.log(msg.enc);
+			    var decr= CryptoJS.AES.decrypt(msg.enc, msg.k, { format: JsonFormatter });
+			    var dcrmsg = CryptoJS.enc.Utf8.stringify(decr);
+				$("#msgs").append("<li><strong><span class='text-success'>" + who + "</span></strong>: " +dcrmsg + "</li>");
+			}
+		});
+
+		socket.on("disconnect", function(){
+			$("#msgs").append("<li><strong><span class='text-warning'>The server is not available</span></strong></li>");
+			$("#msg").attr("disabled", "disabled");
+			$("#send").attr("disabled", "disabled");
+		});
+
+
+		$("#send").click(function(){
+			
+			var msg = $("#msg").val();
+
+			var frq = $("#frq").val();
+		
+			var outData = { "msg" : msg, "frq": frq };
+			
+			$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
+			
+			socket.emit("send", JSON.stringify(outData));
+			
+			$("#msg").val("");
+			
+		});
+
+		$("#msg").keypress(function(e){
+			if(e.which == 13) {
+				
+				var msg = $("#msg").val();
+
+				var frq = $("#frq").val();
+		
+				var outData = { "msg" : msg, "frq": frq };
+				
+				socket.emit("send", JSON.stringify(outData));
+				$("#msg").val("");
+				$("#msgs").append("<li><strong><span class='text-success'> Me</span></strong>: " +  escapeHtml(msg).substring(0, 512) + "</li>");
+			}
+		});
+
+	});
+</script>
+<body>
+
+<div class="row">
+  <div class="span2">
+  	<ul id="people" class="unstyled"></ul>
+  </div>
+  <div class="span4">
+  	<ul id="msgs" class="unstyled"></ul>
+  </div>
+</div>
+<div class="row">
+	<div class="span5 offset2" id="login">
+		<form class="form-inline">
+  			<input type="text" class="input-small" placeholder="Your name..." id="name">
+			<input type="text" class="input-small" placeholder="Frequency (MHz)..." id="frq">
+			<input type="button" name="join" id="join" value="Join" class="btn btn-primary">
+			
+  			
+
+		</form>
+	</div>
+
+	<div class="span5 offset2" id="chat">
+		<form id="2" class="form-inline">
+  			<input type="text" class="input" placeholder="Your message" id="msg">
+			<input type="button" name="send" id="send" value="Send" class="btn btn-success">
+		</form>
+	</div>
+  </div>
+</div>
+
+</body>
+</html>
