@@ -49,14 +49,16 @@
 		});
 
 		$("#join").click(function(){
-			$("#msgs").append("<li>Connecting...</li>");
+			
 			var name = $("#name").val();
 			var frq = $("#frq").val();
 			
 			var userData = { "usr" : name, "frq": frq };
 
 			if (name != "" || frq != "") {
+
 				socket.emit("join", JSON.stringify(userData) );
+				$("#msgs").append("<li>Connecting...</li>");
 				$("#login").hide();
 				$("#chat").show();
 				$("#msg").focus();
