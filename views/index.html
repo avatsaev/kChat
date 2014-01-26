@@ -54,11 +54,15 @@
 		$("#join").click(function(){
 
 
-			if (name != "" || frq != "") {
+			if ($("#name").val() != "") {
 
 				usr = $("#name").val();
-				frq = $("#frq").val();
 				
+			}
+
+			if( $("#frq").val() != ""){
+
+				frq = $("#frq").val();
 			}
 
 
