@@ -58,7 +58,7 @@ socket.on("connection", function (client) {
 
 
 		if (userData["usr"]==undefined) {
-			userData["usr"]="User_"+Math.random()*110000;
+			userData["usr"]="User_"+Math.floor(Math.random()*110000);
 		}
 
 		if (userData["frq"]==undefined) {
