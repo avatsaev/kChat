@@ -59,6 +59,7 @@ socket.on("connection", function (client) {
 		
 		userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
 		userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
+
 		if (userData["usr"]==undefined) {
 			userData["usr"]="User_"+Math.random()*110000;
 		}
@@ -98,6 +99,8 @@ socket.on("connection", function (client) {
 		
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
+
+		if(inData["msg"] || inData["frq"]) return;
 
 		tumbler(inData["frq"], "chat", client, {msg:inData["msg"] });
 		
@@ -193,6 +196,9 @@ function tumbler(frq, event, client, params){
 
 function escapeHtml(text) {
   console.log("REPLACE: "+text);
+  if(text==undefined){
+  	return undefined;
+  }
   return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
 
