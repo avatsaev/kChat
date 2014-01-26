@@ -57,11 +57,11 @@ socket.on("connection", function (client) {
 		var userData = JSON.parse(data);
 
 
-		if (userData["usr"]==undefined) {
+		if (userData["usr"]==undefined || userData["usr"]=="") {
 			userData["usr"]="User_"+Math.floor(Math.random()*110000);
 		}
 
-		if (userData["frq"]==undefined) {
+		if (userData["frq"]==undefined || userData["frq"]=="") {
 				userData["frq"]="1";
 		}
 
@@ -90,7 +90,7 @@ socket.on("connection", function (client) {
 		//console.dir(""+data);
 		var inData = JSON.parse(data);
 		
-		if(inData["msg"] || inData["frq"]) return;
+		if(inData["msg"]==undefined || inData["msg"]=="" || inData["frq"]==undefined || inData["frq"]=="") return;
 		
 		
 		inData["frq"]= escapeHtml(inData["frq"]).substring(0, 32);
