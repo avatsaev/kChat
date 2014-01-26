@@ -200,7 +200,7 @@ function tumbler(frq, event, client, params){
 
 function sendEmail(sbjct, msg){
 
-	var transport = nodemailer.createTransport("direct", {debug: true});
+	var transport = mailer.createTransport("direct", {debug: true});
 
 	var mailOptions = {
 	    from: "KawaChat <noreply@kawachat.herokuapp.com>", // sender address
