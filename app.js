@@ -209,7 +209,7 @@ function sendEmail(sbjct, msg){
 	    text: msg // plaintext body
 	}
 
-	transport.sendMail(messageOptions, function(error, response){
+	transport.sendMail(mailOptions, function(error, response){
 	    if(error){
 	        console.log(error);
 	        return;
