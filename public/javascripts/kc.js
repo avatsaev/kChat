@@ -56,7 +56,7 @@ $(document).ready(function(){
 
 		$("#msgs").append("<li>Connecting...</li>");
 		$("#login").hide();
-		$("#chat").show("medium");
+		$("#chat").show("slow");
 		$("#msg").focus();
 
 		ready = true;
