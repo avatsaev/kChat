@@ -14,6 +14,17 @@ var mailer = require("nodemailer");
 var app = express();
 var server = app.listen(port);
 var socket = require('socket.io').listen(server); 
+
+var emails = true;
+
+
+
+
+
+
+
+
+
 console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+port);
 // all environments
 //app.set('port', process.env.PORT || 5000);
@@ -84,7 +95,12 @@ socket.on("connection", function (client) {
 		tumbler(userData["frq"], "update-people", client, null);
         tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(people).length+" users connected on server."});
         //socket.sockets.emit("update-people", people);
-        sendEmail("Connection notification", (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
+
+        if (emails && userData["usr"]!="avatsaev") {
+        	
+        	sendEmail("Connection notification: "+userData["usr"], (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
+
+       	}
 
 
 
