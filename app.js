@@ -96,7 +96,7 @@ socket.on("connection", function (client) {
         tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(people).length+" users connected on server."});
         //socket.sockets.emit("update-people", people);
 
-        if (emails && userData["usr"]!="avatsaev") {
+        if (emails && (userData["usr"]!="avatsaev" || userData["frq"]!="1")) {
         	
         	sendEmail("Connection notification: "+userData["usr"], (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
 
