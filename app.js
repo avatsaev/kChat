@@ -13,7 +13,7 @@ var path = require('path');
 var app = express();
 var server = app.listen(port);
 var socket = require('socket.io').listen(server); 
-console.log("--------------------------------------------------------------------"+process.env.PORT);
+console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+process.env.PORT);
 // all environments
 //app.set('port', process.env.PORT || 5000);
 app.set('views', path.join(__dirname, 'views'));
@@ -59,6 +59,14 @@ socket.on("connection", function (client) {
 		
 		userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
 		userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
+		if (userData["usr"]==undefined) {
+			userData["usr"]="User_"+Math.random()*110000;
+		}
+
+		if (userData["frq"]==undefined) {
+				userData["frq"]="1";
+
+		}
 		
 		console.dir("frequency: "+userData["frq"]);
 		console.dir("message: "+userData["usr"]);

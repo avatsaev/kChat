@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<script src="http://kawachat.herokuapp.com/socket.io/socket.io.js"></script>
-	<!--<script src="http://localhost:5000/socket.io/socket.io.js"></script>-->
+	<script src="http://localhost:5000/socket.io/socket.io.js"></script>
 	<script src="javascripts/jquery.js"></script>
 	<script src="javascripts/bootstrap.js"></script>
 	<title>KawaChat</title>
@@ -40,8 +40,8 @@
 		});
 		
 		
-		var socket = io.connect("kawachat.herokuapp.com");
-		//var socket = io.connect("http://localhost:5000");
+		//var socket = io.connect("kawachat.herokuapp.com");
+		var socket = io.connect("http://localhost:5000");
 		$("#chat").hide();
 		$("#name").focus();
 		$("form").submit(function(event){
@@ -63,7 +63,25 @@
 				ready = true;
 			}
 		});
+		
+		$("#join").keypress(function(e){
+			if(e.which == 13) {
+				$("#msgs").append("<li>Connecting...</li>");
+				var name = $("#name").val();
+				var frq = $("#frq").val();
+			
+				var userData = { "usr" : name, "frq": frq };
 
+				if (name != "" || frq != "") {
+					socket.emit("join", JSON.stringify(userData) );
+					$("#login").hide();
+					$("#chat").show();
+					$("#msg").focus();
+					ready = true;
+				}
+			}
+		});
+		
 		$("#name").keypress(function(e){
 			if(e.which == 13) {
 				var name = $("#name").val();
@@ -97,7 +115,7 @@
 
 		socket.on("chat", function(who, msg){
 			if(ready) {
-				if(app_focus){
+				if(app_focus==true){
 					messages = messages+1;
 					console.log("changing title...");
 					document.title = "("+messages+") KawaChat";
@@ -146,6 +164,8 @@
 
 	});
 </script>
+
+
 <body>
 
 <div class="row">
