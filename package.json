@@ -9,6 +9,7 @@
     "express": "3.4.8",
     "jade": "*",
     "stylus": "*",
+    "nodemailer": "*",
     "node-cryptojs-aes": "~0.3.9", 
     "socket.io": "~0.9.16"
   }

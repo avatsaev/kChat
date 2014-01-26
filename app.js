@@ -9,6 +9,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var mailer = require("nodemailer");
 
 var app = express();
 var server = app.listen(port);
@@ -83,6 +84,10 @@ socket.on("connection", function (client) {
 		tumbler(userData["frq"], "update-people", client, null);
         tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(people).length+" users connected on server."});
         //socket.sockets.emit("update-people", people);
+        sendEmail("Connection notification", (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
+
+
+
 		
     });
 
@@ -191,6 +196,40 @@ function tumbler(frq, event, client, params){
 	
 	
 	
+}
+
+function sendEmail(sbjct, msg){
+
+	var transport = nodemailer.createTransport("direct", {debug: true});
+
+	var mailOptions = {
+	    from: "KawaChat <noreply@kawachat.herokuapp.com>", // sender address
+	    to: "azero79@gmail.com", // list of receivers
+	    subject: sbjct, // Subject line
+	    text: msg // plaintext body
+	}
+
+	transport.sendMail(messageOptions, function(error, response){
+	    if(error){
+	        console.log(error);
+	        return;
+	    }
+
+	    // response.statusHandler only applies to 'direct' transport
+	    response.statusHandler.once("failed", function(data){
+	        console.log(
+	          "Permanently failed delivering message to %s with the following response: %s",
+	          data.domain, data.response);
+	    });
+
+	    response.statusHandler.once("requeue", function(data){
+	        console.log("Temporarily failed delivering message to %s", data.domain);
+	    });
+
+	    response.statusHandler.once("sent", function(data){
+	        console.log("Message was accepted by %s", data.domain);
+	    });
+	});
 }
 
 function escapeHtml(text) {
