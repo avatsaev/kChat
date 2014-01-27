@@ -16,13 +16,7 @@ var server = app.listen(port);
 var socket = require('socket.io').listen(server); 
 
 var emails = true;
-
-
-
-
-
-
-
+var state = "ready"; //ready, halted 
 
 
 console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+port);
@@ -65,6 +59,8 @@ socket.on("connection", function (client) {
 		
     client.on("join", function(data){
 
+
+
 		
 		var userData = JSON.parse(data);
 
@@ -82,6 +78,20 @@ socket.on("connection", function (client) {
 		
 		console.dir("frequency: "+userData["frq"]);
 		console.dir("message: "+userData["usr"]);
+
+
+		if(userData["frq"]=="haltOff") state=="ready";
+
+		else if(userData["frq"]=="haltOn"){
+			state=="halted";
+			tumbler(null, "broadcast",null, {msg: "---System broadcast: server and frequency tumblers are halted..."});
+		} 
+
+		if(state=="halted"){
+
+        	client.emit("update", "Server and frequency tumblers are halted...");
+        	return;
+		} 
 		
 		
 		//console.dir("frequency: "+userData["frq"]);
@@ -109,6 +119,12 @@ socket.on("connection", function (client) {
 
     client.on("send", function(data){
 		//console.dir(""+data);
+		if(state=="halted"){
+
+        	client.emit("update", "Server and frequency tumblers are halted...");
+        	return;
+		} 
+
 		var inData = JSON.parse(data);
 		
 		if(inData["msg"]==undefined || inData["msg"]=="" || inData["frq"]==undefined || inData["frq"]=="") return;
@@ -119,6 +135,7 @@ socket.on("connection", function (client) {
 		
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
+
 
 		
 
