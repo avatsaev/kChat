@@ -80,7 +80,7 @@ socket.on("connection", function (client) {
 		console.dir("message: "+userData["usr"]);
 
 
-		if(userData["frq"]=="haltOff") state=="ready";
+		if(userData["frq"]=="haltOff") state="ready";
 
 		else if(userData["frq"]=="haltOn"){
 			state="halted";
