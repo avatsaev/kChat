@@ -83,13 +83,14 @@ socket.on("connection", function (client) {
 		if(userData["frq"]=="haltOff") state=="ready";
 
 		else if(userData["frq"]=="haltOn"){
-			state=="halted";
+			state="halted";
 			tumbler(null, "broadcast",null, {msg: "---System broadcast: server and frequency tumblers are halted..."});
+			
 		} 
 
 		if(state=="halted"){
 
-        	client.emit("update", "Server and frequency tumblers are halted...");
+        	client.emit("update", "Connection refused: server and frequency tumblers are halted...");
         	return;
 		} 
 		
@@ -120,8 +121,7 @@ socket.on("connection", function (client) {
     client.on("send", function(data){
 		//console.dir(""+data);
 		if(state=="halted"){
-
-        	client.emit("update", "Server and frequency tumblers are halted...");
+        	client.emit("update", "ERROR: Server and frequency tumblers are halted...");
         	return;
 		} 
 
