@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 var people = {};
-var port = process.env.PORT || 5079;
+var port = process.env.PORT || 5000;
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
@@ -28,7 +28,7 @@ var state = "ready"; //ready, halted
 
 console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+port);
 // all environments
-//app.set('port', process.env.PORT || 5000);
+//app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
 app.use(express.favicon());
@@ -53,9 +53,9 @@ app.get('/', function(req, res){
 //app.get('/users', user.list);
 
 // Create an HTTP service.
-//http.createServer(app).listen(port);
+http.createServer(app).listen(80);
 // Create an HTTPS service identical to the HTTP service.
-https.createServer(options, app).listen(port);
+//https.createServer(options, app).listen(port+1);
 
 
 //SERVER CHAT
