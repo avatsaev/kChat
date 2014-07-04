@@ -8,16 +8,23 @@ var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
+var https = require('https');
+var fs = require('fs');
 var path = require('path');
 var mailer = require("nodemailer");
 
+var options = {
+  key: fs.readFileSync('private/cert/kawachat-server-key.pem'),
+  cert: fs.readFileSync('private/cert/kawachat-server-cert.pem')
+};
+
 var app = express();
+
 var server = app.listen(port);
-var socket = require('socket.io').listen(server); 
+var socket = require('socket.io').listen(server);
 
 var emails = true;
-var state = "ready"; //ready, halted 
-
+var state = "ready"; //ready, halted
 
 console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+port);
 // all environments
@@ -45,10 +52,10 @@ app.get('/', function(req, res){
 //app.get('/', routes.index);
 //app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('KawaChat server listening on port ' + port);
-});
-
+// Create an HTTP service.
+http.createServer(app).listen(80);
+// Create an HTTPS service identical to the HTTP service.
+https.createServer(options, app).listen(443);
 
 
 //SERVER CHAT
@@ -56,12 +63,9 @@ http.createServer(app).listen(app.get('port'), function(){
 
 
 socket.on("connection", function (client) {
-		
+
     client.on("join", function(data){
 
-
-
-		
 		var userData = JSON.parse(data);
 
 
@@ -75,7 +79,7 @@ socket.on("connection", function (client) {
 
 		userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
 		userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
-		
+
 		console.dir("frequency: "+userData["frq"]);
 		console.dir("message: "+userData["usr"]);
 
@@ -85,21 +89,20 @@ socket.on("connection", function (client) {
 		else if(userData["frq"]=="haltOn"){
 			state="halted";
 			tumbler(null, "broadcast",null, {msg: "---System broadcast: server and frequency tumblers are halted..."});
-			
-		} 
+		}
 
 		if(state=="halted"){
 
         	client.emit("update", "Connection refused: server and frequency tumblers are halted...");
         	return;
-		} 
-		
-		
+		}
+
+
 		//console.dir("frequency: "+userData["frq"]);
 		//console.dir("user: "+userData["usr"]);
-		
+
         people[client.id] = userData;
-		
+
         client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
 
 		tumbler(userData["frq"], "update", client, {msg: (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz") });
@@ -108,14 +111,9 @@ socket.on("connection", function (client) {
         //socket.sockets.emit("update-people", people);
 
         if (emails && !(userData["usr"]=="avatsaev" || userData["frq"]=="1" || userData["frq"]=="haltOn" || userData["frq"]=="haltOff") ) {
-        	
+
         	sendEmail("Connection notification: "+userData["usr"], (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
-
        	}
-
-
-
-		
     });
 
     client.on("send", function(data){
@@ -123,35 +121,31 @@ socket.on("connection", function (client) {
 		if(state=="halted"){
         	client.emit("update", "ERROR: Server and frequency tumblers are halted...");
         	return;
-		} 
+		}
 
 		var inData = JSON.parse(data);
-		
+
 		if(inData["msg"]==undefined || inData["msg"]=="" || inData["frq"]==undefined || inData["frq"]=="") return;
-		
-		
+
+
 		inData["frq"]= escapeHtml(inData["frq"]).substring(0, 32);
 		inData["msg"]= escapeHtml(inData["msg"]).substring(0, 512);
-		
+
 		console.dir("frequency: "+inData["frq"]);
 		console.dir("message: "+inData["msg"]);
 
-
-		
-
 		tumbler(inData["frq"], "chat", client, {msg:inData["msg"] });
-		
-		
+
+
 		//console.dir(socket.sockets);
 		//{ '42OslOM5p-TdRbypq9CY': 'ust' }
-		
-        //socket.sockets.emit("chat", people[client.id], msg);
 
+        //socket.sockets.emit("chat", people[client.id], msg);
     });
 
     client.on("disconnect", function(){
-		
-		
+
+
 		if(people[client.id]!=undefined){
 			tumbler(people[client.id]["frq"], "update", client, { msg: (people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz") } );
 		}
@@ -160,16 +154,16 @@ socket.on("connection", function (client) {
 
         delete people[client.id];
 
-		
+
         //socket.sockets.emit("update-people", people);
     });
 });
 
 
 function tumbler(frq, event, client, params){
-	
+
 	if(event=="update"){
-		
+
 		for (var userID in people) {
 
 			if(people[userID]["frq"]==frq){
@@ -177,58 +171,42 @@ function tumbler(frq, event, client, params){
 					socket.sockets.sockets[userID].emit("update", params.msg);
 				}
 			}
-			
 		}
 	}
-	
+
 	if(event=="chat"){
-		
+
 		for (var userID in people) {
-			
+
 			if(userID!=client.id){
-				
+
 				if(people[userID]["frq"]==frq){
 					socket.sockets.sockets[userID].emit("chat", people[client.id]["usr"], params.msg);
 				}
-		
 			}
-
 		}
-		
 	}
-	
+
 	if(event=="update-people"){
-		
+
 		msg = "---Users on this frequency: ";
 		for (var userID in people) {
-			
+
 			if(people[userID]["frq"]==frq){
 				msg=msg+"/"+people[userID]["usr"]+"/ - "
 			}
-			
 		}
-		
+
 		for (var userID in people) {
 			if(people[userID]["frq"]==frq){
 				socket.sockets.sockets[userID].emit("update", msg);
 			}
 		}
-		
-		
-		
 	}
-	
-	if(event=="broadcast"){
-		
 
-			socket.sockets.emit("update", params.msg);
-			
-		
+	if(event=="broadcast"){
+		socket.sockets.emit("update", params.msg);
 	}
-	
-	
-	
-	
 }
 
 function sendEmail(sbjct, msg){
@@ -272,4 +250,3 @@ function escapeHtml(text) {
   }
   return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 }
-
