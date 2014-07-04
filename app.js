@@ -53,9 +53,9 @@ app.get('/', function(req, res){
 //app.get('/users', user.list);
 
 // Create an HTTP service.
-http.createServer(app).listen(80);
+//http.createServer(app).listen(app.get('port'));
 // Create an HTTPS service identical to the HTTP service.
-//https.createServer(options, app).listen(port+1);
+https.createServer(options, app).listen(app.get('port'));
 
 
 //SERVER CHAT
