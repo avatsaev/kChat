@@ -46,16 +46,23 @@ if ('development' == app.get('env')) {
 }
 
 
-app.get('/', function(req, res){
-  res.sendfile("views/index.html");
+app.get('/', function(req, res, next){
+
+
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+        return res.redirect(['https://', req.get('Host'), req.url].join(''));
+    } else {
+        res.sendfile("views/index.html");
+    }
+
 });
 //app.get('/', routes.index);
 //app.get('/users', user.list);
 
 // Create an HTTP service.
-http.createServer(app).listen(app.get('port'));
+//http.createServer(app).listen(app.get('port'));
 // Create an HTTPS service identical to the HTTP service.
-https.createServer(options, app).listen(app.get('port'));
+//https.createServer(options, app).listen(app.get('port'));
 
 
 //SERVER CHAT
