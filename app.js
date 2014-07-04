@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 var people = {};
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 5079;
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
@@ -53,9 +53,9 @@ app.get('/', function(req, res){
 //app.get('/users', user.list);
 
 // Create an HTTP service.
-http.createServer(app).listen(80);
+//http.createServer(app).listen(port);
 // Create an HTTPS service identical to the HTTP service.
-https.createServer(options, app).listen(443);
+https.createServer(options, app).listen(port);
 
 
 //SERVER CHAT
