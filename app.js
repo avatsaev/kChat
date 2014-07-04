@@ -14,8 +14,8 @@ var path = require('path');
 var mailer = require("nodemailer");
 
 var options = {
-  key: fs.readFileSync('private/cert/kawachat-server-key.pem'),
-  cert: fs.readFileSync('private/cert/kawachat-server-cert.pem')
+  key: fs.readFileSync('private/cert/kc-server-key.pem'),
+  cert: fs.readFileSync('private/cert/kc-server-cert.pem')
 };
 
 var app = express();
