@@ -2,15 +2,23 @@
 /**
 * Module dependencies.
 */
-var people = {};
+
 var port = process.env.PORT || 3002;
 var express = require('express');
-var routes = require('./routes');
 var http = require('http');
-var https = require('https');
 var fs = require('fs');
 var path = require('path');
 var mailer = require("nodemailer");
+var logger = require('morgan');
+var _ = require("lodash");
+var favicon = require('serve-favicon');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+
+// custom stuff
+var chat  = require("./chat")
+var tumbler = require("./tumbler")
+var root_route = require('./routes/index');
 
 // var https_options = {
 //   key: fs.readFileSync('private/cert/kc-server-key.pem'),
@@ -22,41 +30,60 @@ var app = express();
 var server = app.listen(port);
 var socket = require('socket.io').listen(server);
 
-var emails = true;
-var state = "ready"; //ready, halted
+
+
+chat.socket = socket;
+
 
 console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+port);
 // all environments
 app.set('port', port);
+app.set('view engine', 'jade');
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(require('stylus').middleware(path.join(__dirname, 'public')));
+app.use(favicon(__dirname + '/public/images/logo@2x.png'));
+
+
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+app.use('/', root_route);
+
+
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
 }
 
-
-app.get('/', function(req, res, next){
-
-  res.sendfile("views/index.html");
-
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
-//app.get('/', routes.index);
-//app.get('/users', user.list);
-
-// Create an HTTP service.
-//http.createServer(app).listen(app.get('port'));
-// Create an HTTPS service identical to the HTTP service.
-//https.createServer(options, app).listen(app.get('port'));
 
 
 //SERVER CHAT
@@ -68,6 +95,9 @@ socket.on("connection", function (client) {
   client.on("join", function(data){
 
     var userData = JSON.parse(data);
+
+    console.log("-----------------------------------------")
+    console.log(data)
 
 
     if (userData["usr"]==undefined || userData["usr"]=="") {
@@ -85,14 +115,14 @@ socket.on("connection", function (client) {
     console.dir("message: "+userData["usr"]);
 
 
-    if(userData["frq"]=="haltOff") state="ready";
+    if(userData["frq"]=="haltOff") chat.state="ready";
 
     else if(userData["frq"]=="haltOn"){
-      state="halted";
+      chat.state="halted";
       tumbler(null, "broadcast",null, {msg: "---System broadcast: server and frequency tumblers are halted..."});
     }
 
-    if(state=="halted"){
+    if(chat.state=="halted"){
       client.emit("update", "Connection refused: server and frequency tumblers are halted...");
       return;
     }
@@ -101,21 +131,21 @@ socket.on("connection", function (client) {
     //console.dir("frequency: "+userData["frq"]);
     //console.dir("user: "+userData["usr"]);
 
-    people[client.id] = userData;
+    chat.people[client.id] = userData;
     client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
 
     tumbler(userData["frq"], "update", client, {msg: (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz") });
     tumbler(userData["frq"], "update-people", client, null);
-    tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(people).length+" users connected on server."});
+    tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(chat.people).length+" users connected on server."});
     //socket.sockets.emit("update-people", people);
-    if (emails && !(userData["usr"]=="avatsaev" || userData["frq"]=="1" || userData["frq"]=="haltOn" || userData["frq"]=="haltOff") ) {
+    if (chat.emails && !(userData["usr"]=="avatsaev" || userData["frq"]=="1" || userData["frq"]=="haltOn" || userData["frq"]=="haltOff") ) {
       sendEmail("Connection notification: "+userData["usr"], (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
     }
   });
 
   client.on("send", function(data){
     //console.dir(""+data);
-    if(state=="halted"){
+    if(chat.state=="halted"){
       client.emit("update", "ERROR: Server and frequency tumblers are halted...");
       return;
     }
@@ -143,68 +173,19 @@ socket.on("connection", function (client) {
   client.on("disconnect", function(){
 
 
-    if(people[client.id]!=undefined){
-      tumbler(people[client.id]["frq"], "update", client, { msg: (people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz") } );
+    if(chat.people[client.id]!=undefined){
+      tumbler(chat.people[client.id]["frq"], "update", client, { msg: (chat.people[client.id]["usr"] + " has left the frequency "+chat.people[client.id]["frq"]+" MHz") } );
     }
 
     //socket.sockets.emit("update", people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz");
 
-    delete people[client.id];
+    delete chat.people[client.id];
 
 
     //socket.sockets.emit("update-people", people);
   });
 });
 
-
-function tumbler(frq, event, client, params){
-
-  if(event=="update"){
-
-    for (var userID in people) {
-
-      if(people[userID]["frq"]==frq){
-        if(userID!=client.id){
-          socket.sockets.sockets[userID].emit("update", params.msg);
-        }
-      }
-    }
-  }
-
-  if(event=="chat"){
-
-    for (var userID in people) {
-
-      if(userID!=client.id){
-
-        if(people[userID]["frq"]==frq){
-          socket.sockets.sockets[userID].emit("chat", people[client.id]["usr"], params.msg);
-        }
-      }
-    }
-  }
-
-  if(event=="update-people"){
-
-    msg = "---Users on this frequency: ";
-    for (var userID in people) {
-
-      if(people[userID]["frq"]==frq){
-        msg=msg+"/"+people[userID]["usr"]+"/ - "
-      }
-    }
-
-    for (var userID in people) {
-      if(people[userID]["frq"]==frq){
-        socket.sockets.sockets[userID].emit("update", msg);
-      }
-    }
-  }
-
-  if(event=="broadcast"){
-    socket.sockets.emit("update", params.msg);
-  }
-}
 
 function sendEmail(sbjct, msg){
 
@@ -223,27 +204,27 @@ function sendEmail(sbjct, msg){
       return;
     }
 
-    // response.statusHandler only applies to 'direct' transport
-    response.statusHandler.once("failed", function(data){
-      console.log(
-        "Permanently failed delivering message to %s with the following response: %s",
-        data.domain, data.response);
-      });
-
-      response.statusHandler.once("requeue", function(data){
-        console.log("Temporarily failed delivering message to %s", data.domain);
-      });
-
-      response.statusHandler.once("sent", function(data){
-        console.log("Message was accepted by %s", data.domain);
-      });
+  // response.statusHandler only applies to 'direct' transport
+  response.statusHandler.once("failed", function(data){
+    console.log(
+      "Permanently failed delivering message to %s with the following response: %s",
+      data.domain, data.response);
     });
-  }
 
-  function escapeHtml(text) {
-    console.log("REPLACE: "+text);
-    if(text==undefined){
-      return undefined;
-    }
-    return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+    response.statusHandler.once("requeue", function(data){
+      console.log("Temporarily failed delivering message to %s", data.domain);
+    });
+
+    response.statusHandler.once("sent", function(data){
+      console.log("Message was accepted by %s", data.domain);
+    });
+  });
+}
+
+function escapeHtml(text) {
+  console.log("REPLACE: "+text);
+  if(text==undefined){
+    return undefined;
   }
+  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+}

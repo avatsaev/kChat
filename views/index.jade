@@ -1,5 +1,32 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html(lang='en')
+  head
+    script(src='/socket.io/socket.io.js')
+    script(src='javascripts/jquery.js')
+    script(src='javascripts/bootstrap.js')
+    script(src='javascripts/kc.js')
+    title KawaChat
+    meta(name='viewport', content='width=device-width, user-scalable=no, initial-scale=1')
+    link(rel='stylesheet', type='text/css', href='stylesheets/bootstrap.css')
+    link(rel='stylesheet', type='text/css', href='stylesheets/kc.css')
+    meta(property='og:image', content='images/logo@2x.png')
+  body
+    .row
+      .span2
+        ul#people.unstyled
+      .span4
+        ul#msgs.unstyled
+    .row
+      #login.span5.offset2.centered
+        img#login_logo(src='images/logo@2x.png')
+        span KawaChat
+        form.form-inline
+          input#name.input-small(type='text', placeholder='Your name...')
+          br
+          input#frq.input-small(type='text', placeholder='Frequency (MHz)...')
+          br
+          input#join.btn.btn-primary(type='button', name='join', value='Join')
+      #chat.span5.offset2
+        form#2.form-inline
+          input#msg.input(type='text', placeholder='Your message')
+          input#send.btn.btn-success(type='button', name='send', value='Send')

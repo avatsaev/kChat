@@ -5,7 +5,7 @@ var dev = true;
 if(dev){
 	var ip = "127.0.0.1";
 	var port = "3002";
-	var host = (ip || "localhost")+":"+port ;
+	var host = (ip || "127.0.0.1")+":"+port ;
 
 }
 
@@ -23,11 +23,8 @@ var messages=0;
 
 $(document).ready(function(){
 
+	var socket = io();
 
-	var socket;
-
-	if (dev) socket = io.connect(host);
-	else socket = io.connect("kawachat.herokuapp.com");
 
 	$("#chat").hide();
 	$("#name").focus();
