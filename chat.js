@@ -2,16 +2,14 @@
 
 var chat = {
   socket: undefined,
-  people: {},
-  emails: true,
+  people: [],
+  emails: false,
   state: "ready", //ready, halted
 
   spinup: function(){
     console.log(this)
   }
 }
-
-
 
 
 module.exports = chat

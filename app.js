@@ -86,7 +86,7 @@ app.use(function(err, req, res, next) {
 });
 
 
-//SERVER CHAT
+//SERVER CHAT------------------------------------------------
 
 
 
@@ -97,50 +97,55 @@ socket.on("connection", function (client) {
     var userData = JSON.parse(data);
 
     console.log("-----------------------------------------")
-    console.log(data)
 
+    user = {}
 
-    if (userData["usr"]==undefined || userData["usr"]=="") {
-      userData["usr"]="User_"+Math.floor(Math.random()*110000);
+    if (userData["username"]==undefined || userData["username"]=="") {
+      user.username="User_"+Math.floor(Math.random()*110000);
     }
 
     if (userData["frq"]==undefined || userData["frq"]=="") {
-      userData["frq"]="1";
+      user.frq="1";
     }
 
-    userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
-    userData["frq"]= escapeHtml(userData["frq"]).substring(0, 32);
+    user.username = escapeHtml(userData["username"]).substring(0, 20);
+    user.frq = escapeHtml(userData["frq"]).substring(0, 32);
 
-    console.dir("frequency: "+userData["frq"]);
-    console.dir("message: "+userData["usr"]);
+    console.dir("frequency: "+user.frq);
+    console.dir("message: "+user.username);
 
 
-    if(userData["frq"]=="haltOff") chat.state="ready";
+    if(user.frq == "haltOff") chat.state="ready";
 
-    else if(userData["frq"]=="haltOn"){
+    else if(user.frq == "haltOn"){
       chat.state="halted";
-      tumbler(null, "broadcast",null, {msg: "---System broadcast: server and frequency tumblers are halted..."});
+      tumbler(null, "broadcast",null, {msg: "---System broadcast: server and frequency tumblers temporarily are halted, stand by..."});
     }
 
     if(chat.state=="halted"){
-      client.emit("update", "Connection refused: server and frequency tumblers are halted...");
+      client.emit("update", "Connection refused: server and frequency tumblers are temporarily halted...");
       return;
     }
 
+    user.client_id = client.id
+
 
     //console.dir("frequency: "+userData["frq"]);
-    //console.dir("user: "+userData["usr"]);
+    //console.dir("user: "+userData["username"]);
 
-    chat.people[client.id] = userData;
-    client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
+    //chat.people[client.id] = userData;
+    chat.people.push(user)
 
-    tumbler(userData["frq"], "update", client, {msg: (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz") });
-    tumbler(userData["frq"], "update-people", client, null);
-    tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(chat.people).length+" users connected on server."});
-    //socket.sockets.emit("update-people", people);
-    if (chat.emails && !(userData["usr"]=="avatsaev" || userData["frq"]=="1" || userData["frq"]=="haltOn" || userData["frq"]=="haltOff") ) {
-      sendEmail("Connection notification: "+userData["usr"], (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
-    }
+    console.log(chat.people)
+
+    client.emit("update", "Welcome. You have connected to the server on the frequency "+user.frq+" MHz");
+
+    tumbler(user.frq, "update", client, {msg: (user.username+" has joined the server on the frequency "+user.frq+" MHz") });
+
+    tumbler(user.frq, "update-people", client, null);
+
+    tumbler(null, "broadcast",null, {msg: "---System broadcast: "+chat.people.length+" users connected on server."});
+
   });
 
   client.on("send", function(data){
@@ -164,22 +169,19 @@ socket.on("connection", function (client) {
     tumbler(inData["frq"], "chat", client, {msg:inData["msg"] });
 
 
-    //console.dir(socket.sockets);
-    //{ '42OslOM5p-TdRbypq9CY': 'ust' }
-
-    //socket.sockets.emit("chat", people[client.id], msg);
   });
 
   client.on("disconnect", function(){
 
+    user = _.find(chat.people, {client_id: client.id})
 
-    if(chat.people[client.id]!=undefined){
-      tumbler(chat.people[client.id]["frq"], "update", client, { msg: (chat.people[client.id]["usr"] + " has left the frequency "+chat.people[client.id]["frq"]+" MHz") } );
+    if(user){
+      tumbler(user.frq, "update", client, { msg: (user.username + " left the frequency "+user.frq+" MHz") } );
     }
 
-    //socket.sockets.emit("update", people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz");
+    // delete chat.people[client.id];
 
-    delete chat.people[client.id];
+    _.remove(chat.people, {client_id: user.client_id})
 
 
     //socket.sockets.emit("update-people", people);

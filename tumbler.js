@@ -1,48 +1,42 @@
 var chat  = require("./chat")
-
+var _ = require("lodash")
 
 function tumbler(frq, event, client, params){
 
+  users = _.filter(chat.people, function(user){return user.frq==frq})
+
   if(event=="update"){
 
-    for (var userID in chat.people) {
-
-      if(chat.people[userID]["frq"]==frq){
-        if(userID != client.id){
-          chat.socket.sockets.sockets[userID].emit("update", params.msg);
-        }
+    users.forEach(function(user){
+      if(user.client_id != client.id){
+        chat.socket.sockets.sockets[user.client_id].emit("update", params.msg);
       }
-    }
+    });
+
   }
 
   if(event=="chat"){
 
-    for (var userID in chat.people) {
-
-      if(userID!=client.id){
-
-        if(chat.people[userID]["frq"]==frq){
-          chat.socket.sockets.sockets[userID].emit("chat", chat.people[client.id]["usr"], params.msg);
-        }
+    users.forEach(function(user){
+      if(user.client_id != client.id){
+        chat.socket.sockets.sockets[user.client_id].emit("chat", user.username, params.msg);
       }
-    }
+    });
+
   }
 
   if(event=="update-people"){
 
     msg = "---Users on this frequency: ";
-    for (var userID in chat.people) {
 
-      if(chat.people[userID]["frq"]==frq){
-        msg=msg+"/"+chat.people[userID]["usr"]+"/ - "
-      }
-    }
+    users.forEach(function(user){
+      msg=msg+"/"+user.username+"/ - "
+    });
 
-    for (var userID in chat.people) {
-      if(chat.people[userID]["frq"]==frq){
-        chat.socket.sockets.sockets[userID].emit("update", msg);
-      }
-    }
+    users.forEach(function(user){
+      chat.socket.sockets.sockets[user.client_id].emit("update", msg);
+    });
+
   }
 
   if(event=="broadcast"){

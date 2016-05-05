@@ -1,21 +1,9 @@
 
 
-var dev = true;
-
-if(dev){
-	var ip = "127.0.0.1";
-	var port = "3002";
-	var host = (ip || "127.0.0.1")+":"+port ;
-
-}
-
-
-
-
 var ready;
 var app_focus;
 var frq="1";
-var usr="User_"+Math.floor(Math.random()*110000);
+var username="User_"+Math.floor(Math.random()*110000);
 var messages=0;
 
 
@@ -37,7 +25,7 @@ $(document).ready(function(){
 
 		if ($("#name").val() != "") {
 
-			usr = $("#name").val();
+			username = $("#name").val();
 
 		}
 
@@ -47,7 +35,7 @@ $(document).ready(function(){
 		}
 
 
-		var userData = { "usr" : usr, "frq": frq };
+		var userData = { "username" : username, "frq": frq };
 
 		socket.emit("join", JSON.stringify(userData) );
 
@@ -85,7 +73,7 @@ $(document).ready(function(){
 
 		if(msg=="") return;
 
-		$("#msgs").append("<li><strong><span class='text-success'>"+usr+" (Me)</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
+		$("#msgs").append("<li><strong><span class='text-success'>"+username+" (Me)</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
 
 		var outData = { "msg" : msg, "frq": frq };
 		socket.emit("send", JSON.stringify(outData));
