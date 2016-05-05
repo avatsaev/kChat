@@ -1,12 +1,11 @@
 
 /**
- * Module dependencies.
- */
+* Module dependencies.
+*/
 var people = {};
 var port = process.env.PORT || 3002;
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -48,9 +47,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', function(req, res, next){
 
-
-        res.sendfile("views/index.html");
-
+  res.sendfile("views/index.html");
 
 });
 //app.get('/', routes.index);
@@ -68,7 +65,7 @@ app.get('/', function(req, res, next){
 
 socket.on("connection", function (client) {
 
-    client.on("join", function(data){
+  client.on("join", function(data){
 
     var userData = JSON.parse(data);
 
@@ -78,7 +75,7 @@ socket.on("connection", function (client) {
     }
 
     if (userData["frq"]==undefined || userData["frq"]=="") {
-        userData["frq"]="1";
+      userData["frq"]="1";
     }
 
     userData["usr"]= escapeHtml(userData["usr"]).substring(0, 20);
@@ -90,41 +87,37 @@ socket.on("connection", function (client) {
 
     if(userData["frq"]=="haltOff") state="ready";
 
-    else if(userData["frq"]=="_haltOn_"){
+    else if(userData["frq"]=="haltOn"){
       state="halted";
       tumbler(null, "broadcast",null, {msg: "---System broadcast: server and frequency tumblers are halted..."});
     }
 
     if(state=="halted"){
-
-          client.emit("update", "Connection refused: server and frequency tumblers are halted...");
-          return;
+      client.emit("update", "Connection refused: server and frequency tumblers are halted...");
+      return;
     }
 
 
     //console.dir("frequency: "+userData["frq"]);
     //console.dir("user: "+userData["usr"]);
 
-        people[client.id] = userData;
-
-        client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
+    people[client.id] = userData;
+    client.emit("update", "Welcome. You have connected to the server on the frequency "+userData["frq"]+" MHz");
 
     tumbler(userData["frq"], "update", client, {msg: (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz") });
     tumbler(userData["frq"], "update-people", client, null);
-        tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(people).length+" users connected on server."});
-        //socket.sockets.emit("update-people", people);
+    tumbler(null, "broadcast",null, {msg: "---System broadcast: "+Object.keys(people).length+" users connected on server."});
+    //socket.sockets.emit("update-people", people);
+    if (emails && !(userData["usr"]=="avatsaev" || userData["frq"]=="1" || userData["frq"]=="haltOn" || userData["frq"]=="haltOff") ) {
+      sendEmail("Connection notification: "+userData["usr"], (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
+    }
+  });
 
-        if (emails && !(userData["usr"]=="avatsaev" || userData["frq"]=="1" || userData["frq"]=="haltOn" || userData["frq"]=="haltOff") ) {
-
-          sendEmail("Connection notification: "+userData["usr"], (userData["usr"]+" has joined the server on the frequency "+userData["frq"]+" MHz"));
-         }
-    });
-
-    client.on("send", function(data){
+  client.on("send", function(data){
     //console.dir(""+data);
     if(state=="halted"){
-          client.emit("update", "ERROR: Server and frequency tumblers are halted...");
-          return;
+      client.emit("update", "ERROR: Server and frequency tumblers are halted...");
+      return;
     }
 
     var inData = JSON.parse(data);
@@ -144,23 +137,23 @@ socket.on("connection", function (client) {
     //console.dir(socket.sockets);
     //{ '42OslOM5p-TdRbypq9CY': 'ust' }
 
-        //socket.sockets.emit("chat", people[client.id], msg);
-    });
+    //socket.sockets.emit("chat", people[client.id], msg);
+  });
 
-    client.on("disconnect", function(){
+  client.on("disconnect", function(){
 
 
     if(people[client.id]!=undefined){
       tumbler(people[client.id]["frq"], "update", client, { msg: (people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz") } );
     }
 
-        //socket.sockets.emit("update", people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz");
+    //socket.sockets.emit("update", people[client.id]["usr"] + " has left the frequency "+people[client.id]["frq"]+" MHz");
 
-        delete people[client.id];
+    delete people[client.id];
 
 
-        //socket.sockets.emit("update-people", people);
-    });
+    //socket.sockets.emit("update-people", people);
+  });
 });
 
 
@@ -218,39 +211,39 @@ function sendEmail(sbjct, msg){
   var transport = mailer.createTransport("direct", {debug: true});
 
   var mailOptions = {
-      from: "KawaChat <noreply@kawachat.herokuapp.com>", // sender address
-      to: "azero79@gmail.com", // list of receivers
-      subject: sbjct, // Subject line
-      text: msg // plaintext body
+    from: "KawaChat <noreply@kawachat.herokuapp.com>", // sender address
+    to: "azero79@gmail.com", // list of receivers
+    subject: sbjct, // Subject line
+    text: msg // plaintext body
   }
 
   transport.sendMail(mailOptions, function(error, response){
-      if(error){
-          console.log(error);
-          return;
-      }
+    if(error){
+      console.log(error);
+      return;
+    }
 
-      // response.statusHandler only applies to 'direct' transport
-      response.statusHandler.once("failed", function(data){
-          console.log(
-            "Permanently failed delivering message to %s with the following response: %s",
-            data.domain, data.response);
+    // response.statusHandler only applies to 'direct' transport
+    response.statusHandler.once("failed", function(data){
+      console.log(
+        "Permanently failed delivering message to %s with the following response: %s",
+        data.domain, data.response);
       });
 
       response.statusHandler.once("requeue", function(data){
-          console.log("Temporarily failed delivering message to %s", data.domain);
+        console.log("Temporarily failed delivering message to %s", data.domain);
       });
 
       response.statusHandler.once("sent", function(data){
-          console.log("Message was accepted by %s", data.domain);
+        console.log("Message was accepted by %s", data.domain);
       });
-  });
-}
-
-function escapeHtml(text) {
-  console.log("REPLACE: "+text);
-  if(text==undefined){
-    return undefined;
+    });
   }
-  return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-}
+
+  function escapeHtml(text) {
+    console.log("REPLACE: "+text);
+    if(text==undefined){
+      return undefined;
+    }
+    return text.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  }
