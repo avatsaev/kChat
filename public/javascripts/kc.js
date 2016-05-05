@@ -1,12 +1,12 @@
 
 
-var dev = false;
+var dev = true;
 
 if(dev){
-	var ip = "192.168.0.17";
-	var port = "5000";
+	var ip = "127.0.0.1";
+	var port = "3002";
 	var host = (ip || "localhost")+":"+port ;
-	console.log("DEV_host: "+host);
+
 }
 
 
@@ -22,13 +22,13 @@ var messages=0;
 
 
 $(document).ready(function(){
-	
+
 
 	var socket;
 
 	if (dev) socket = io.connect(host);
 	else socket = io.connect("kawachat.herokuapp.com");
-	
+
 	$("#chat").hide();
 	$("#name").focus();
 	$("form").submit(function(event){
@@ -41,7 +41,7 @@ $(document).ready(function(){
 		if ($("#name").val() != "") {
 
 			usr = $("#name").val();
-			
+
 		}
 
 		if( $("#frq").val() != ""){
@@ -68,14 +68,14 @@ $(document).ready(function(){
 
 
 	$("#send").click(function(){
-		
+
 		sendMsg();
-		
+
 	});
 
 	$("#msg").keypress(function(e){
 		if(e.which == 13) {
-			
+
 			sendMsg();
 
 		}
@@ -89,10 +89,10 @@ $(document).ready(function(){
 		if(msg=="") return;
 
 		$("#msgs").append("<li><strong><span class='text-success'>"+usr+" (Me)</span></strong>: " + escapeHtml(msg).substring(0, 512) + "</li>");
-		
+
 		var outData = { "msg" : msg, "frq": frq };
 		socket.emit("send", JSON.stringify(outData));
-		
+
 		$("#msg").val("");
 
 	}
@@ -150,12 +150,12 @@ $(document).ready(function(){
 	    app_focus = true;
 		console.log("focus");
 		messages=0;
-	
+
 	}).blur(function() {
 		//document.title = "(*) KawaChat"
 		console.log("!focus");
 	    app_focus = false;
-	
+
 	});
 
 
