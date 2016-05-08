@@ -96,8 +96,6 @@ socket.on("connection", function (client) {
 
     var userData = JSON.parse(data);
 
-    console.log("-----------------------------------------")
-
     user = {}
 
     if (userData["username"]==undefined || userData["username"]=="") {
@@ -112,7 +110,7 @@ socket.on("connection", function (client) {
     user.frq = escapeHtml(userData["frq"]).substring(0, 32);
 
     console.dir("frequency: "+user.frq);
-    console.dir("message: "+user.username);
+    console.dir("usr: "+user.username);
 
 
     if(user.frq == "haltOff") chat.state="ready";
@@ -142,7 +140,7 @@ socket.on("connection", function (client) {
 
     tumbler(user.frq, "update", client, {msg: (user.username+" has joined the server on the frequency "+user.frq+" MHz") });
 
-    tumbler(user.frq, "update-people", client, null);
+    tumbler(user.frq, "update-people", client, {user: user});
 
     tumbler(null, "broadcast",null, {msg: "---System broadcast: "+chat.people.length+" users connected on server."});
 
@@ -177,11 +175,12 @@ socket.on("connection", function (client) {
 
     if(user){
       tumbler(user.frq, "update", client, { msg: (user.username + " left the frequency "+user.frq+" MHz") } );
+      _.remove(chat.people, {client_id: user.client_id})
+
     }
 
     // delete chat.people[client.id];
 
-    _.remove(chat.people, {client_id: user.client_id})
 
 
     //socket.sockets.emit("update-people", people);
