@@ -35,6 +35,9 @@ function tumbler(frq, event, client, params){
 
     users.forEach(function(user){
       chat.socket.sockets.sockets[user.client_id].emit("update", msg);
+      console.log("user_join")
+      console.log(params.user)
+      chat.socket.sockets.sockets[user.client_id].emit("user_join", {user: params.user});
     });
 
   }

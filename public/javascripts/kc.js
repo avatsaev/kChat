@@ -95,6 +95,11 @@ $(document).ready(function(){
 			$("#msgs").append("<li>" + msg + "</li>");
 	})
 
+  socket.on("user_join", function(data){
+    console.log("NEW USER JOINED");
+    console.log(data);
+  })
+
 	//socket.on("update-people", function(people){
 	//	if(ready) {
 	//		$("#people").empty();
