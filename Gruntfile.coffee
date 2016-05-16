@@ -4,6 +4,12 @@ module.exports = (grunt) ->
   # Initialize config.
   ###
 
+  getEnvironment = ->
+    tasks = grunt.cli.tasks[0]
+    environment = tasks.split(':')
+    environment[1]
+
+
   ports =
     'staging': 3002
     'production': 3003
@@ -14,10 +20,6 @@ module.exports = (grunt) ->
   current_deploy_path = deploy_to_path + '/current'
   deploy_port = ports[getEnvironment()]
 
-  getEnvironment = ->
-    tasks = grunt.cli.tasks[0]
-    environment = tasks.split(':')
-    environment[1]
 
   grunt.initConfig shipit:
     options:
