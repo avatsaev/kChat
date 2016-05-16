@@ -52,7 +52,7 @@ module.exports = (grunt) ->
       shared:
         overwrite: true
         dirs: [
-          "node_modules", "tmp", "log"
+          "node_modules", "tmp", "log", "public/storage"
         ]
       assets:
           paths: [
