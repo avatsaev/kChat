@@ -19,8 +19,8 @@ module.exports = function (grunt) {
   var nvm_version = "v6.1.0";
   var node_bin_path = "~/.nvm/versions/node/"+nvm_version+"/bin/";
   var forever = node_bin_path+"/forever";
-  var deploy_to_path = '/home/ops/www/kawachat/';
-  var current_deploy_path = deploy_to_path + 'current';
+  var deploy_to_path = '/home/ops/www/kawachat/'+getEnvironment()="/";
+  var current_deploy_path = deploy_to_path + '/current';
   var deploy_port = ports[getEnvironment()]
 
   grunt.initConfig({
