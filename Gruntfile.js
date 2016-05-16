@@ -19,9 +19,9 @@ module.exports = function (grunt) {
   var nvm_version = "v6.1.0";
   var node_bin_path = "~/.nvm/versions/node/"+nvm_version+"/bin/";
   var forever = node_bin_path+"/forever";
-  var deploy_to_path = '/home/ops/www/kawachat/'+getEnvironment()="/";
+  var deploy_to_path = '/home/ops/www/kawachat/'+getEnvironment()+"/";
   var current_deploy_path = deploy_to_path + '/current';
-  var deploy_port = ports[getEnvironment()]
+  var deploy_port = ports[getEnvironment()];
 
   grunt.initConfig({
 
@@ -46,12 +46,12 @@ module.exports = function (grunt) {
 
       staging: {
         servers: ['ops@cloud.vatsaev.com'],
-        branch: "staging",
+        branch: "staging"
       },
 
       production: {
         servers: ['ops@cloud.vatsaev.com'],
-        branch: "production",
+        branch: "production"
       }
     }
   });
@@ -67,17 +67,17 @@ module.exports = function (grunt) {
 
 
 
-  grunt.shipit.on('deploy', function () {
-    grunt.task.run([
-      'stop'
-    ]);
-  });
-
-  grunt.shipit.on('updated', function() {
-   grunt.task.run([
-     'install'
-   ]);
- });
+ //  grunt.shipit.on('deploy', function () {
+ //    grunt.task.run([
+ //      'stop'
+ //    ]);
+ //  });
+ //
+ //  grunt.shipit.on('updated', function() {
+ //   grunt.task.run([
+ //     'install'
+ //   ]);
+ // });
 
   grunt.registerTask('stop', function () {
     var done = this.async();
