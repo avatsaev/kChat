@@ -44,7 +44,11 @@ module.exports = function (grunt) {
   grunt.registerTask('start', function () {
     var done = this.async();
     var current = grunt.config('shipit.options.deployTo') + '/current';
-    grunt.shipit.remote('cd ' + current + ' && forever restart app.js', done);
+
+    grunt.shipit.remote('cd ' + current, done);
+    grunt.shipit.remote('nvm use --delete-prefix v6.1.0', done);
+    grunt.shipit.remote('npm install', done);
+    grunt.shipit.remote('forever restart app.js', done);
   });
 
 };
