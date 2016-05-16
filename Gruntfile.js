@@ -1,10 +1,27 @@
 
 module.exports = function (grunt) {
-  var nvm_version = "v6.1.0";
 
   /**
    * Initialize config.
    */
+
+  var ports = {
+    "staging": 3002,
+    "production": 3003
+  }
+
+  function getEnvironment(){
+    var tasks = grunt.cli.tasks[0];
+    var environment = tasks.split(":");
+    return environment[1];
+  }
+
+  var nvm_version = "v6.1.0";
+  var node_bin_path = "~/.nvm/versions/node/"+nvm_version+"/bin/";
+  var forever = node_bin_path+"/forever";
+  var deploy_to_path = '/home/ops/www/kawachat/';
+  var current_deploy_path = deploy_to_path + 'current';
+  var deploy_port = ports[getEnvironment()]
 
   grunt.initConfig({
 
@@ -15,7 +32,7 @@ module.exports = function (grunt) {
         workspace: '/tmp/kawachat-shipit',
 
         // Project will be deployed in this directory.
-        deployTo: '/home/ops/www/kawachat',
+        deployTo: deploy_to_path,
 
         // Repository url.
         repositoryUrl: 'git@git.vatsaev.com:kawachat.git',
@@ -24,12 +41,17 @@ module.exports = function (grunt) {
         ignores: ['.git', 'node_modules'],
 
         // Number of release to keep (for rollback).
-        keepReleases: 3
+        keepReleases: 10
       },
 
       staging: {
         servers: ['ops@cloud.vatsaev.com'],
         branch: "staging",
+      },
+
+      production: {
+        servers: ['ops@cloud.vatsaev.com'],
+        branch: "production",
       }
     }
   });
@@ -38,34 +60,52 @@ module.exports = function (grunt) {
    * Load shipit task.
    */
 
+
   grunt.loadNpmTasks('grunt-shipit');
   grunt.loadNpmTasks('shipit-deploy');
 
+
+
+
+  grunt.shipit.on('deploy', function () {
+    grunt.task.run([
+      'stop'
+    ]);
+  });
+
+  grunt.shipit.on('updated', function() {
+   grunt.task.run([
+     'install'
+   ]);
+ });
+
   grunt.registerTask('stop', function () {
     var done = this.async();
-    var current = grunt.config('shipit.options.deployTo') + '/current';
 
+    grunt.shipit.remote('source ~/.nvm/nvm.sh && ' + node_bin_path +
+                        "forever stop " + current_deploy_path + "/app.js"
+                      );
 
-    grunt.shipit.remote('cd ' + current, done);
-    grunt.shipit.remote('forever stop app.js', done);
   });
 
 
   grunt.registerTask('install', function () {
     var done = this.async();
-    var current = grunt.config('shipit.options.deployTo') + '/current';
 
-    grunt.shipit.remote('cd ' + current, done);
-    grunt.shipit.remote("npm install", done);
+    grunt.shipit.remote('source ~/.nvm/nvm.sh' +
+                        " && cd " + current_deploy_path +
+                        " && npm install"
+                      );
   });
 
 
   grunt.registerTask('start', function () {
     var done = this.async();
-    var current = grunt.config('shipit.options.deployTo') + '/current';
 
-    grunt.shipit.remote('cd ' + current, done);
-    grunt.shipit.remote('forever start app.js', done);
+    grunt.shipit.remote('source ~/.nvm/nvm.sh && ' +
+                        "export NODE_ENV="+getEnvironment()+" && export PORT="+deploy_port+' && '+
+                        forever+" start " + current_deploy_path + "/app.js"
+                      );
   });
 
 };
