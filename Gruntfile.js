@@ -38,4 +38,13 @@ module.exports = function (grunt) {
    */
 
   grunt.loadNpmTasks('grunt-shipit');
+  grunt.loadNpmTasks('shipit-deploy');
+
+
+  grunt.registerTask('start', function () {
+    var done = this.async();
+    var current = grunt.config('shipit.options.deployTo') + '/current';
+    grunt.shipit.remote('cd ' + current + ' && forever restart app.js', done);
+  });
+
 };
