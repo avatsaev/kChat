@@ -27,7 +27,8 @@ module.exports = function (grunt) {
       },
 
       staging: {
-        servers: ['ops@cloud.vatsaev.com'],
+        user: 'ops',
+        servers: ['cloud.vatsaev.com'],
         branch: "staging",
       }
     }
