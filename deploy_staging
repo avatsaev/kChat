@@ -1,0 +1,10 @@
+#!/usr/bin/zsh
+
+gc master
+g merge local
+g push vatsaev master
+gc staging
+g merge master
+g push vatsaev staging
+grunt shipit:staging deploy start
+gc local
