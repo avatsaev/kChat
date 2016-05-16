@@ -45,11 +45,12 @@ module.exports = function (grunt) {
   grunt.registerTask('start', function () {
     var done = this.async();
     var current = grunt.config('shipit.options.deployTo') + '/current';
+    
     grunt.shipit.remote('export NVM_DIR=~/.nvm');
     grunt.shipit.remote('source ~/.nvm/nvm.sh');
     grunt.shipit.remote('cd ' + current, done);
     grunt.shipit.remote("nvm use --delete-prefix "+nvm_version, done);
-    grunt.shipit.remote("/home/ops/.nvm/versions/node/"+nvm_version+"/bin/npm install", done);
+    grunt.shipit.remote("~/.nvm/versions/node/"+nvm_version+"/bin/npm install", done);
     grunt.shipit.remote('forever restart app.js', done);
   });
 
