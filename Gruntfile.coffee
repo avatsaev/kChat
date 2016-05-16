@@ -4,6 +4,10 @@ module.exports = (grunt) ->
   # Initialize config.
   ###
 
+  grunt.loadNpmTasks 'grunt-shipit'
+  grunt.loadNpmTasks 'shipit-deploy'
+  grunt.loadNpmTasks 'shipit-shared'
+
   get_env = ->
     tasks = grunt.cli.tasks[0]
     environment = tasks.split(':')
@@ -37,6 +41,17 @@ module.exports = (grunt) ->
     staging:
       servers: [ 'ops@cloud.vatsaev.com' ]
       branch: 'staging'
+      shared:
+        overwrite: true
+        dirs: [
+          "node_modules",
+          path: "node_modules"
+          overwrite: true
+          chmod: "-R 777"
+        ]
+
+
+
     production:
       servers: [ 'ops@cloud.vatsaev.com' ]
       branch: 'production'
@@ -45,26 +60,22 @@ module.exports = (grunt) ->
   # Load shipit task.
   ###
 
-  grunt.loadNpmTasks 'grunt-shipit'
-  grunt.loadNpmTasks 'shipit-deploy'
 
-  # grunt.shipit.on 'deploy', ->
-  #   grunt.task.run [
-  #    'stop',
-  #    'install'
-  #   ]
 
-  # grunt.shipit.on 'published', ->
-  #   grunt.task.run 'start'
-  #
+  grunt.shipit.on 'deploy:init', ->
+    grunt.task.run [
+     'stop'
+    ]
 
-  #
-  #  grunt.shipit.on('updated', function() {
-  #   grunt.task.run([
-  #     'install'
-  #   ]);
-  # });
+  grunt.shipit.on 'deploy:publish', ->
+    grunt.task.run [
+     'install'
+    ]
 
+  grunt.shipit.on 'deploy:finish', ->
+    grunt.task.run [
+     'start'
+    ]
 
   grunt.registerTask 'stop', ->
     done = @async()
@@ -75,7 +86,6 @@ module.exports = (grunt) ->
 
 
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
-                          ln -s #{node_modules_path} #{current_deploy_path}/node_modules &&
                           cd #{current_deploy_path} &&
                           npm install"
 
