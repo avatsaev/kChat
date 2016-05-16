@@ -45,8 +45,9 @@ module.exports = function (grunt) {
     var done = this.async();
     var current = grunt.config('shipit.options.deployTo') + '/current';
 
+
     grunt.shipit.remote('cd ' + current, done);
-    grunt.shipit.remote('/home/ops/.nvm/versions/node/v6.1.0/bin/forever stop app.js', done);
+    grunt.shipit.remote('forever stop app.js', done);
   });
 
 
@@ -55,7 +56,6 @@ module.exports = function (grunt) {
     var current = grunt.config('shipit.options.deployTo') + '/current';
 
     grunt.shipit.remote('cd ' + current, done);
-    grunt.shipit.remote("nvm use "+nvm_version, done);
     grunt.shipit.remote("npm install", done);
   });
 
@@ -65,7 +65,7 @@ module.exports = function (grunt) {
     var current = grunt.config('shipit.options.deployTo') + '/current';
 
     grunt.shipit.remote('cd ' + current, done);
-    grunt.shipit.remote('/home/ops/.nvm/versions/node/v6.1.0/bin/forever start app.js', done);
+    grunt.shipit.remote('forever start app.js', done);
   });
 
 };
