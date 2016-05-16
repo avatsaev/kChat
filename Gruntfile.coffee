@@ -1,12 +1,10 @@
 module.exports = (grunt) ->
 
-  ###*
-  # Initialize config.
-  ###
 
   grunt.loadNpmTasks 'grunt-shipit'
   grunt.loadNpmTasks 'shipit-deploy'
   grunt.loadNpmTasks 'shipit-shared'
+  grunt.loadNpmTasks 'shipit-assets'
 
   get_env = ->
     tasks = grunt.cli.tasks[0]
@@ -17,21 +15,32 @@ module.exports = (grunt) ->
     'staging': 3002
     'production': 3003
 
+  app_name = "kawachat"
   nvm_version = 'v6.1.0'
+  user = "ops"
+  repo_url = 'git@git.vatsaev.com:kawachat.git'
+  server_url = "cloud.vatsaev.com"
+
   node_bin_path = '~/.nvm/versions/node/' + nvm_version + '/bin'
   forever = node_bin_path + '/forever'
-  deploy_to_path = '/home/ops/www/kawachat/' + get_env()
+
+  deploy_to_path = "/home/#{user}/www/kawachat/" + get_env()
+
   current_deploy_path = deploy_to_path + '/current'
   deploy_port = ports[get_env()]
-  shared_path = deploy_to_path+"/shared"
-  node_modules_path = shared_path+"/node_modules"
+  shared_path = "#{deploy_to_path}/shared"
+
+  forever_pid = "#{app_name}-#{get_env()}"
+  forever_pid_path = "#{shared_path}/tmp/server.pid"
+  node_modules_path = "#{shared_path}/node_modules"
 
 
   grunt.initConfig shipit:
     options:
-      workspace: '/tmp/kawachat-shipit'
+      workspace: "/tmp/#{app_name}-shipit"
       deployTo: deploy_to_path
-      repositoryUrl: 'git@git.vatsaev.com:kawachat.git'
+      repositoryUrl: repo_url
+      servers: [ "#{user}@#{server_url}" ]
       ignores: [
         '.git'
       ]
@@ -39,47 +48,42 @@ module.exports = (grunt) ->
       symlinks: ['node_modules']
       keepReleases: 10
     staging:
-      servers: [ 'ops@cloud.vatsaev.com' ]
       branch: 'staging'
       shared:
         overwrite: true
         dirs: [
-          "node_modules",
-          path: "node_modules"
-          overwrite: true
-          chmod: "-R 777"
+          "node_modules", "tmp", "log"
         ]
-
+      assets:
+          paths: [
+            'public/storage'
+          ]
 
 
     production:
-      servers: [ 'ops@cloud.vatsaev.com' ]
       branch: 'production'
+      shared:
+        overwrite: true
+        dirs: [
+          "node_modules", "tmp", "log"
+        ]
 
-  ###*
-  # Load shipit task.
-  ###
 
+  # grunt.shipit.on 'init', -> grunt.task.run 'stop'
+  #
+  #
+  # grunt.shipit.on 'publish', -> grunt.task.run 'install'
+  #
+  #
+  # grunt.shipit.on 'finish', -> grunt.task.run 'start'
 
-
-  grunt.shipit.on 'deploy:init', ->
-    grunt.task.run [
-     'stop'
-    ]
-
-  grunt.shipit.on 'deploy:publish', ->
-    grunt.task.run [
-     'install'
-    ]
-
-  grunt.shipit.on 'deploy:finish', ->
-    grunt.task.run [
-     'start'
-    ]
 
   grunt.registerTask 'stop', ->
     done = @async()
-    grunt.shipit.remote "source ~/.nvm/nvm.sh &&  #{forever} stop #{current_deploy_path}/app.js"
+    grunt.shipit.remote " source ~/.nvm/nvm.sh &&
+                          [ -f #{forever_pid_path} ] &&
+                          #{forever} stop $(cat #{forever_pid_path})",
+                          done
 
   grunt.registerTask 'install', ->
     done = @async()
@@ -87,8 +91,18 @@ module.exports = (grunt) ->
 
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           cd #{current_deploy_path} &&
-                          npm install"
+                          npm install",
+                          done
 
   grunt.registerTask 'start', ->
     done = @async()
-    grunt.shipit.remote "source ~/.nvm/nvm.sh && export NODE_ENV=#{get_env()} && export PORT=#{deploy_port} && #{forever} start #{current_deploy_path}/app.js"
+    grunt.shipit.remote " source ~/.nvm/nvm.sh &&
+                          export NODE_ENV=#{get_env()} &&
+                          export PORT=#{deploy_port} &&
+                          #{forever} start
+                          --uid #{forever_pid}
+                          --pidFile=#{forever_pid_path}
+                          -l #{shared_path}/log/#{get_env()}.log
+                          -a -n 5000
+                           #{current_deploy_path}/app.js",
+                          done
