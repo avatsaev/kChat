@@ -6,5 +6,5 @@ git push vatsaev master
 git checkout staging
 git merge master
 git push vatsaev staging
-grunt shipit:staging deploy start
+grunt shipit:staging stop deploy install start
 git checkout local

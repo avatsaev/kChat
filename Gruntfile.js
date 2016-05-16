@@ -41,6 +41,33 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-shipit');
   grunt.loadNpmTasks('shipit-deploy');
 
+  grunt.registerTask('stop', function () {
+    var done = this.async();
+    var current = grunt.config('shipit.options.deployTo') + '/current';
+
+    grunt.shipit.remote('export NVM_DIR=~/.nvm');
+    grunt.shipit.remote('source ~/.nvm/nvm.sh');
+    grunt.shipit.remote('[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" ')
+    grunt.shipit.remote('cd ' + current, done);
+    grunt.shipit.remote("nvm use --delete-prefix "+nvm_version, done);
+
+    grunt.shipit.remote('forever stop app.js', done);
+  });
+
+
+  grunt.registerTask('install', function () {
+    var done = this.async();
+    var current = grunt.config('shipit.options.deployTo') + '/current';
+
+    grunt.shipit.remote('export NVM_DIR=~/.nvm');
+    grunt.shipit.remote('source ~/.nvm/nvm.sh');
+    grunt.shipit.remote('[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" ')
+    grunt.shipit.remote('cd ' + current, done);
+    grunt.shipit.remote("nvm use --delete-prefix "+nvm_version, done);
+    grunt.shipit.remote("~/.nvm/versions/node/"+nvm_version+"/bin/npm set progress=false", done);
+    grunt.shipit.remote("~/.nvm/versions/node/"+nvm_version+"/bin/npm install", done);
+  });
+
 
   grunt.registerTask('start', function () {
     var done = this.async();
@@ -51,8 +78,8 @@ module.exports = function (grunt) {
     grunt.shipit.remote('[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" ')
     grunt.shipit.remote('cd ' + current, done);
     grunt.shipit.remote("nvm use --delete-prefix "+nvm_version, done);
-    grunt.shipit.remote("~/.nvm/versions/node/"+nvm_version+"/bin/npm install", done);
-    grunt.shipit.remote('forever restart app.js', done);
+
+    grunt.shipit.remote('forever start app.js', done);
   });
 
 };
