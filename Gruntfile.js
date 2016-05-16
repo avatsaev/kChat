@@ -1,6 +1,6 @@
 
 module.exports = function (grunt) {
-
+  var nvm_version = "v6.1.0"
   /**
    * Initialize config.
    */
@@ -47,8 +47,8 @@ module.exports = function (grunt) {
     grunt.shipit.remote('export NVM_DIR=~/.nvm');
     grunt.shipit.remote('source ~/.nvm/nvm.sh');
     grunt.shipit.remote('cd ' + current, done);
-    grunt.shipit.remote('nvm use --delete-prefix v6.1.0', done);
-    grunt.shipit.remote('npm install', done);
+    grunt.shipit.remote("nvm use --delete-prefix "+nvm_version, done);
+    grunt.shipit.remote("/home/ops/.nvm/versions/node/"+nvm_version+"/bin/npm install", done);
     grunt.shipit.remote('forever restart app.js', done);
   });
 
