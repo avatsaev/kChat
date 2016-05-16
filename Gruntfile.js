@@ -55,6 +55,7 @@ module.exports = function (grunt) {
     var current = grunt.config('shipit.options.deployTo') + '/current';
 
     grunt.shipit.remote('cd ' + current, done);
+    grunt.shipit.remote("nvm use "+nvm_version, done);
     grunt.shipit.remote("npm install", done);
   });
 
