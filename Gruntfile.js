@@ -1,7 +1,7 @@
 
 module.exports = function (grunt) {
   var nvm_version = "v6.1.0";
-
+  var current = grunt.config('shipit.options.deployTo') + '/current';
   /**
    * Initialize config.
    */
@@ -43,7 +43,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('stop', function () {
     var done = this.async();
-    var current = grunt.config('shipit.options.deployTo') + '/current';
+
 
     grunt.shipit.remote('export NVM_DIR=~/.nvm');
     grunt.shipit.remote('source ~/.nvm/nvm.sh');
@@ -57,7 +57,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('install', function () {
     var done = this.async();
-    var current = grunt.config('shipit.options.deployTo') + '/current';
 
     grunt.shipit.remote('export NVM_DIR=~/.nvm');
     grunt.shipit.remote('source ~/.nvm/nvm.sh');
@@ -71,7 +70,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('start', function () {
     var done = this.async();
-    var current = grunt.config('shipit.options.deployTo') + '/current';
 
     grunt.shipit.remote('export NVM_DIR=~/.nvm');
     grunt.shipit.remote('source ~/.nvm/nvm.sh');
