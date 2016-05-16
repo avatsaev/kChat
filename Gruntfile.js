@@ -1,6 +1,7 @@
 
 module.exports = function (grunt) {
-  var nvm_version = "v6.1.0"
+  var nvm_version = "v6.1.0";
+
   /**
    * Initialize config.
    */
