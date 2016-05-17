@@ -52,11 +52,12 @@ module.exports = (grunt) ->
       shared:
         overwrite: true
         dirs: [
-          "node_modules", "tmp", "log", "public/storage"
+          "node_modules", "tmp", "log", "public/storage", "private/storage"
         ]
       assets:
           paths: [
             'public/storage'
+            "private/storage"
           ]
 
 
@@ -82,7 +83,7 @@ module.exports = (grunt) ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           [ -f #{forever_pid_path} ] &&
-                          #{forever} stop $(cat #{forever_pid_path})",
+                           cat #{forever_pid_path} | xargs #{forever} stop",
                           done
 
   grunt.registerTask 'install', ->
