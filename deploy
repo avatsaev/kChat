@@ -3,8 +3,8 @@
 git checkout master
 git merge local
 git push vatsaev master
-git checkout staging
+git checkout $1
 git merge master
-git push vatsaev staging
-grunt shipit:staging stop deploy
+git push vatsaev $1
+grunt shipit:$1 stop deploy
 git checkout local
