@@ -70,20 +70,20 @@ module.exports = (grunt) ->
         ]
 
 
-  # grunt.shipit.on 'init', -> grunt.task.run 'stop'
-  #
-  #
-  # grunt.shipit.on 'publish', -> grunt.task.run 'install'
-  #
-  #
-  # grunt.shipit.on 'finish', -> grunt.task.run 'start'
+  grunt.shipit.on 'init', -> grunt.task.run 'stop'
+
+
+  grunt.shipit.on 'updated', -> grunt.task.run 'install'
+
+
+  grunt.shipit.on 'published', -> grunt.task.run 'start'
 
 
   grunt.registerTask 'stop', ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           [ -f #{forever_pid_path} ] &&
-                           cat #{forever_pid_path} | xargs #{forever} stop",
+                           cat #{forever_pid_path} | xargs #{forever} stop || echo 'server not running' ",
                           done
 
   grunt.registerTask 'install', ->
@@ -98,6 +98,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'start', ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
+                          [ ! -f #{forever_pid_path} ] &&
                           export NODE_ENV=#{get_env()} &&
                           export PORT=#{deploy_port} &&
                           #{forever} start
@@ -105,5 +106,13 @@ module.exports = (grunt) ->
                           --pidFile=#{forever_pid_path}
                           -l #{shared_path}/log/#{get_env()}.log
                           -a -n 5000
-                           #{current_deploy_path}/app.js",
+                           #{current_deploy_path}/app.js ||
+                           echo 'server already running' ",
+                          done
+
+  grunt.registerTask 'restart', ->
+    done = @async()
+    grunt.shipit.remote " source ~/.nvm/nvm.sh &&
+                          [ -f #{forever_pid_path} ] &&
+                           cat #{forever_pid_path} | xargs #{forever} restart || echo 'server not running' ",
                           done
