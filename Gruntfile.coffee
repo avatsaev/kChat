@@ -5,6 +5,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'shipit-deploy'
   grunt.loadNpmTasks 'shipit-shared'
   grunt.loadNpmTasks 'shipit-assets'
+  grunt.loadNpmTasks 'grunt-bower-concat'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
+  grunt.loadNpmTasks 'grunt-contrib-sass'
+  grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-contrib-cssmin'
+  grunt.loadNpmTasks 'grunt-contrib-coffee'
 
   get_env = ->
     tasks = grunt.cli.tasks[0]
@@ -35,49 +41,94 @@ module.exports = (grunt) ->
   node_modules_path = "#{shared_path}/node_modules"
 
 
-  grunt.initConfig shipit:
-    options:
-      workspace: "/tmp/#{app_name}-shipit"
-      deployTo: deploy_to_path
-      repositoryUrl: repo_url
-      servers: [ "#{user}@#{server_url}" ]
-      ignores: [
-        '.git'
-      ]
-      dependencies: ['node_modules']
-      symlinks: ['node_modules']
-      keepReleases: 10
-    staging:
-      branch: 'staging'
-      shared:
-        overwrite: true
-        dirs: [
-          "node_modules", "tmp", "log", "public/storage", "private/storage"
-        ]
-      assets:
-          paths: [
-            'public/storage'
-            "private/storage"
+  grunt.initConfig
+
+    sass:
+      options:
+        style: 'expanded'
+      dist:
+        files:
+          'public/stylesheets/bundle.css': 'assets/sass/bundle.sass'
+    coffee:
+      joined:
+        options:
+          join: true
+          bare: true
+        files:
+          'public/javascripts/bundle.js': ['assets/coffee/**/*.coffee']
+
+
+
+    cssmin:
+      target:
+        files: [
+          expand: true
+          cwd: 'public/stylesheets'
+          src: [
+            'bundle.css'
+            'lib.css'
+            '!*.min.css'
           ]
-
-
-    production:
-      branch: 'production'
-      shared:
-        overwrite: true
-        dirs: [
-          "node_modules", "tmp", "log"
+          dest: 'public/stylesheets'
+          ext: '.min.css'
         ]
+
+    uglify:
+      bower:
+        options:
+          mangle: true
+          compress: true
+        files:
+          'public/javascripts/lib.min.js': 'public/javascripts/lib.js'
+          'public/javascripts/bundle.min.js': 'public/javascripts/bundle.js'
+
+
+    bower_concat:
+      all:
+        dest:
+          js: "public/javascripts/lib.js"
+          css: "public/stylesheets/lib.css"
+
+    shipit:
+      options:
+        workspace: "/tmp/#{app_name}-shipit"
+        deployTo: deploy_to_path
+        repositoryUrl: repo_url
+        servers: [ "#{user}@#{server_url}" ]
+        ignores: [
+          '.git'
+        ]
+        dependencies: ['node_modules']
+        symlinks: ['node_modules']
+        keepReleases: 10
+      staging:
+        branch: 'staging'
+        shared:
+          overwrite: true
+          dirs: [
+            "node_modules", "tmp", "log", "public/storage", "private/storage"
+          ]
+        assets:
+            paths: [
+              'public/storage'
+              "private/storage"
+            ]
+
+
+      production:
+        branch: 'production'
+        shared:
+          overwrite: true
+          dirs: [
+            "node_modules", "tmp", "log"
+          ]
 
 
   grunt.shipit.on 'init', -> grunt.task.run 'stop'
 
-
   grunt.shipit.on 'updated', -> grunt.task.run 'install'
 
-
   grunt.shipit.on 'published', -> grunt.task.run 'start'
-
 
   grunt.registerTask 'stop', ->
     done = @async()
@@ -116,3 +167,12 @@ module.exports = (grunt) ->
                           [ -f #{forever_pid_path} ] &&
                            cat #{forever_pid_path} | xargs #{forever} restart || echo 'server not running' ",
                           done
+
+
+  grunt.registerTask 'assets', [
+    'sass'
+    'coffee:joined'
+    'bower_concat'
+    'uglify:bower'
+    'cssmin'
+  ]

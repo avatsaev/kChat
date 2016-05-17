@@ -40,3 +40,5 @@ jspm_packages
 
 public/storage/*
 private/storage/*
+bower_components/*
+.sass-cache

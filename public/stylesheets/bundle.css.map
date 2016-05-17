@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,gBAAgB;EAEd,WAAW,EAAE,IAAI;EACjB,YAAY,EAAE,IAAI;EAClB,UAAU,EAAE,IAAI;;;ACJlB,OAAO;EACL,KAAK,EAAE,GAAG",
+"sources": ["../../assets/sass/front/pages/login.sass","../../assets/sass/front/pages/chat.sass"],
+"names": [],
+"file": "bundle.css"
+}
