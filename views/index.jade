@@ -1,22 +1,42 @@
 extends layout
 
 block content
-  .row
-    .span2
-      ul#people.unstyled
-    .span4
-      ul#msgs.unstyled
-  .row
-    #login.span5.offset2.centered
-      img#login_logo(src='images/logo@2x.png')
-      span KawaChat
-      form.form-inline
-        input#name.input-small(type='text', placeholder='Your username...')
-        br
-        input#frq.input-small(type='text', placeholder='Frequency (MHz)...')
-        br
-        input#join.btn.btn-primary(type='button', name='join', value='Join')
-    #chat.span5.offset2
-      form#2.form-inline
-        input#msg.input(type='text', placeholder='Your message')
-        input#send.btn.btn-success(type='button', name='send', value='Send')
+  .container
+    
+    .row.clearfix
+      .span2
+        ul#people.unstyled
+      .span4.clearfix
+        ul#msgs.clearfix
+    
+    
+    .row#login-container
+    
+    
+      #login.col-md-12.text-center
+        
+        span#login_logo
+          img(src='images/logo@2x.png')
+        span.title Welcome to KawaChat
+        span.subtitle Quick way to exchange messages 
+      
+      
+      #login-form.col-md-12
+        
+        form
+          .form-group
+            input#name.form-control(type='text', placeholder='Your username...')
+          .form-group
+            input#frq.form-control(type='text', placeholder='Frequency (MHz)...')
+          .form-group
+            input#join.form-control.btn.btn-primary(type='button', name='join', value='Join')
+      
+      
+    #chat.span5.offset2.navbar.navbar-fixed-bottom
+      form.clearfix
+        .form-group
+          row
+            .col-xs-9.col-md-11
+              input#msg.form-control(type='text', placeholder='Your message...')
+            .col-xs-3.col-md-1
+              input#send.btn.btn-success.form-control(type='button', name='send', value='Send')

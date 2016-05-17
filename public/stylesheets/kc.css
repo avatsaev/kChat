@@ -1,36 +1,95 @@
 body{
-	background-color: #222222;
-	color: #CCCCCC;
+  background-color: #222222;
+  color: #CCCCCC;
 }
 
-#login{
-	width: 200px;
-
-    position: absolute;
-    top:2em;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
+#login-container{
 
     margin-left: auto;
     margin-right: auto;
+    margin-top: 20px
 
 }
-
-#login input{
-	margin: 1em;
-
-}
-
-#login span{
-	font-size: 2em;
-	color: #BBBBBB;
-
-}
-
 
 #login_logo{
-	width: 200px;
-	height: 200px;
+  display: block;
+}
+
+#login-form{
+  margin-top: 20px
+}
+
+
+#login-container span{
+
+  color: #BBBBBB;
+
+}
+
+
+#login_logo img{
+  width: 200px;
+  height: 200px;
+}
+
+
+
+.title{
+  font-size: 24px;
+  display: block;
+}
+
+
+.subtitle{
+  font-size: 14px;
+  display: block;
+}
+
+#chat{
+  padding: 10px;
+  background-color: #3F3E3E;
+
+}
+
+#chat form{
+
+}
+
+#msgs{
+  list-style-type: none;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 40px
+}
+
+.msg-container{
+  display:block;
+  float:left;
+  clear:both;
+  max-width:100%;
+  margin:0 0 1em 0;
+  background:#158ffe;
+  color:#fff;
+  display:block;
+  width: 100%;
+  border-radius:.75rem;
+  padding: 10px;
+}
+
+.me-msg{
+  display:block;
+  float:left;
+  clear:both;
+  max-width:100%;
+  margin:0 0 1em 0;
+  background:#1EC54C;
+  color:#fff;
+  display:block;
+  width: 100%;
+  border-radius:.75rem;
+  padding: 10px;
+}
+
+.username-label{
+  color: #D3D3D3
 }
