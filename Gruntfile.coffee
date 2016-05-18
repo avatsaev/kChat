@@ -49,6 +49,7 @@ module.exports = (grunt) ->
       dist:
         files:
           'public/stylesheets/bundle.css': 'assets/sass/bundle.sass'
+
     coffee:
       joined:
         options:
@@ -56,9 +57,6 @@ module.exports = (grunt) ->
           bare: true
         files:
           'public/javascripts/bundle.js': ['assets/coffee/**/*.coffee']
-
-
-
     cssmin:
       target:
         files: [
@@ -74,7 +72,7 @@ module.exports = (grunt) ->
         ]
 
     uglify:
-      bower:
+      all:
         options:
           mangle: true
           compress: true
@@ -84,10 +82,11 @@ module.exports = (grunt) ->
 
 
     bower_concat:
+
       all:
         dest:
           js: "public/javascripts/lib.js"
-          css: "public/stylesheets/lib.css"
+          scss: "public/stylesheets/lib.scss"
 
     shipit:
       options:
@@ -172,7 +171,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'assets', [
     'sass'
     'coffee:joined'
-    'bower_concat'
-    'uglify:bower'
+    'bower_concat:all'
+    'uglify:all'
     'cssmin'
   ]
