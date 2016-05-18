@@ -30,7 +30,7 @@ module.exports = (grunt) ->
   node_bin_path = '~/.nvm/versions/node/' + nvm_version + '/bin'
   forever = node_bin_path + '/forever'
 
-  deploy_to_path = "/home/#{user}/www/kawachat/" + get_env()
+  deploy_to_path = "/home/#{user}/www/#{app_name}/" + get_env()
 
   current_deploy_path = deploy_to_path + '/current'
   deploy_port = ports[get_env()]
@@ -175,7 +175,8 @@ module.exports = (grunt) ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           [ -f #{forever_pid_path} ] &&
-                           cat #{forever_pid_path} | xargs #{forever} restart || echo 'server not running' ",
+                            cat #{forever_pid_path} | xargs #{forever} restart
+                          || echo 'server not running' ",
                           done
 
 
