@@ -138,8 +138,11 @@ module.exports = (grunt) ->
   grunt.registerTask 'stop', ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
-                          [ -f #{forever_pid_path} ] &&
-                           cat #{forever_pid_path} | xargs #{forever} stop || echo 'server not running' ",
+                          if [ -f #{forever_pid_path} ]; then
+                            cat #{forever_pid_path} | xargs #{forever} stop;
+                          else
+                            echo 'server not running';
+                          fi",
                           done
 
   grunt.registerTask 'install', ->
@@ -154,16 +157,18 @@ module.exports = (grunt) ->
   grunt.registerTask 'start', ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
-                          [ ! -f #{forever_pid_path} ] &&
-                          export NODE_ENV=#{get_env()} &&
-                          export PORT=#{deploy_port} &&
-                          #{forever} start
-                          --uid #{forever_pid}
-                          --pidFile=#{forever_pid_path}
-                          -l #{shared_path}/log/#{get_env()}.log
-                          -a -n 5000
-                           #{current_deploy_path}/app.js ||
-                           echo 'server already running' ",
+                          if [ ! -f #{forever_pid_path} ]; then
+                            export NODE_ENV=#{get_env()} &&
+                            export PORT=#{deploy_port} &&
+                            #{forever} start
+                            --uid #{forever_pid}
+                            --pidFile=#{forever_pid_path}
+                            -l #{shared_path}/log/#{get_env()}.log
+                            -a -n 5000
+                             #{current_deploy_path}/app.js ;
+                          else
+                            echo 'server already running';
+                          fi ",
                           done
 
   grunt.registerTask 'restart', ->
