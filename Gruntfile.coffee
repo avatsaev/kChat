@@ -87,8 +87,11 @@ module.exports = (grunt) ->
         dest:
           js: "public/javascripts/lib.js"
           css: "public/stylesheets/lib.css"
-        #dependencies:
-          # 'amplify': 'jquery'
+         mainFiles:
+          bootstrap: 'dist/css/bootstrap.css'
+
+        dependencies:
+          'bootstrap-datepicker': 'bootstrap'
 
 
     shipit:
