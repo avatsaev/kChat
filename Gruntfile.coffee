@@ -86,7 +86,10 @@ module.exports = (grunt) ->
       all:
         dest:
           js: "public/javascripts/lib.js"
-          scss: "public/stylesheets/lib.scss"
+          css: "public/stylesheets/lib.css"
+        #dependencies:
+          # 'amplify': 'jquery'
+
 
     shipit:
       options:
