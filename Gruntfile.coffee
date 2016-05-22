@@ -144,8 +144,8 @@ module.exports = (grunt) ->
 
   grunt.shipit.on 'updated', -> grunt.task.run [
     "npm_install",
-    "bower_install"
-    #"assets_compile"
+    "bower_install",
+    "assets_compile"
   ]
 
   grunt.shipit.on 'published', -> grunt.task.run 'start'
@@ -184,7 +184,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'assets_compile', ->
     done = @async()
 
-    # dont forget to "sudo apt-get install ruby-compass" on server
+    # don't forget to "sudo apt-get install ruby-compass" on server
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           cd #{current_deploy_path} &&
                           grunt assets",
