@@ -11,8 +11,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
-  grunt.loadNpmTasks 'grunt-contrib-coffee'
-  grunt.loadNpmTasks 'grunt-obfuscator'
+  grunt.loadNpmTasks 'js-obfuscator'
+
 
   get_env = ->
     tasks = grunt.cli.tasks[0]
@@ -82,15 +82,25 @@ module.exports = (grunt) ->
           'public/javascripts/lib.min.js': 'public/javascripts/lib.js'
           'public/javascripts/bundle.min.js': 'public/javascripts/bundle.js'
 
+    jsObfuscate:
+      all:
+        options:
+          concurrency: 2
+          keepLinefeeds: false
+          keepIndentations: false
+          encodeStrings: true
+          encodeNumbers: true
+          moveStrings: true
+          replaceNames: true
+          variableExclusions: [
+            '^_get_'
+            '^_set_'
+            '^_mtd_'
+          ]
+        files: 'public/javascripts/bundle.min.js': [
+          'public/javascripts/bundle.min.js'
+        ]
 
-    obfuscator:
-      files: [
-        'public/javascripts/bundle.min.js'
-      ],
-      entry: 'public/javascripts/bundle.min.js',
-      out: 'public/javascripts/bundle.min.js',
-      strings: true,
-      root: __dirname
 
     bower_concat:
 
@@ -145,7 +155,7 @@ module.exports = (grunt) ->
   grunt.shipit.on 'published', -> grunt.task.run [
     'npm_install'
     'bower_install'
-    'assets_compile',
+    'assets_compile'
     'start'
   ]
 
@@ -222,5 +232,5 @@ module.exports = (grunt) ->
     'coffee:joined'
     'bower_concat:all'
     'uglify:all'
-    #'obfuscator'
+    'jsObfuscate:all'
   ]
