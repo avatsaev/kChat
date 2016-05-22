@@ -184,7 +184,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'assets_compile', ->
     done = @async()
 
-
+    # dont forget to "sudo apt-get install ruby-compass" on server
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           cd #{current_deploy_path} &&
                           grunt assets",
@@ -219,9 +219,9 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'assets', [
     'sass'
+    'cssmin'
     'coffee:joined'
     'bower_concat:all'
     'uglify:all'
-    'obfuscator'
-    'cssmin'
+    #'obfuscator'
   ]
