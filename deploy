@@ -6,5 +6,5 @@ git push vatsaev master
 git checkout $1
 git merge master
 git push vatsaev $1
-grunt shipit:$1 stop deploy
+grunt shipit:$1 deploy
 git checkout local
