@@ -11,6 +11,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-obfuscator'
 
   get_env = ->
     tasks = grunt.cli.tasks[0]
@@ -81,6 +83,15 @@ module.exports = (grunt) ->
           'public/javascripts/bundle.min.js': 'public/javascripts/bundle.js'
 
 
+    obfuscator:
+      files: [
+        'public/javascripts/bundle.min.js'
+      ],
+      entry: 'public/javascripts/bundle.min.js',
+      out: 'public/javascripts/bundle.min.js',
+      strings: true,
+      root: __dirname
+
     bower_concat:
 
       all:
@@ -131,9 +142,16 @@ module.exports = (grunt) ->
 
   grunt.shipit.on 'init', -> grunt.task.run 'stop'
 
-  grunt.shipit.on 'updated', -> grunt.task.run ['npm_install', "bower_install"]
+  grunt.shipit.on 'updated', -> grunt.task.run [
+    "npm_install",
+    "bower_install",
+    "assets_compile"
+  ]
 
   grunt.shipit.on 'published', -> grunt.task.run 'start'
+
+
+
 
   grunt.registerTask 'stop', ->
     done = @async()
@@ -163,6 +181,16 @@ module.exports = (grunt) ->
                           bower install",
                           done
 
+  grunt.registerTask 'assets_compile', ->
+    done = @async()
+
+
+    grunt.shipit.remote " source ~/.nvm/nvm.sh &&
+                          cd #{current_deploy_path} &&
+                          grunt assets",
+                          done
+
+
 
   grunt.registerTask 'start', ->
     done = @async()
@@ -189,11 +217,11 @@ module.exports = (grunt) ->
                           || echo 'server not running' ",
                           done
 
-
   grunt.registerTask 'assets', [
     'sass'
     'coffee:joined'
     'bower_concat:all'
     'uglify:all'
+    'obfuscator'
     'cssmin'
   ]
