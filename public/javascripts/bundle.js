@@ -1,6 +1,6 @@
-var app_focus, escapeHtml, frq, messages, ready, username;
+var app, app_focus, escapeHtml, frq, messages, ready, username;
 
-console.log("app.coffee");
+app = angular.module('KC', ['btford.socket-io']);
 
 console.log("chat.coffee");
 
@@ -8,7 +8,32 @@ console.log("config.coffee");
 
 console.log("login_ctrl.coffee");
 
+app.controller('MainCtrl', [
+  '$scope', '$rootScope', function($scope, $rootScope) {
+    $scope.login = {
+      username: "",
+      channel: ""
+    };
+    return $rootScope.on('user:login', function(data) {
+      return console.log(data);
+    });
+  }
+]);
+
+app.factory('app_socket', function(socketFactory) {
+  return socketFactory();
+});
+
 console.log("main_ctrl.coffee");
+
+app.controller('MainCtrl', [
+  '$scope', '$rootScope', function($scope, $rootScope) {
+    $scope.test = 'Hello sssworld!';
+    return $rootScope.on('user:login', function(data) {
+      return console.log(data);
+    });
+  }
+]);
 
 console.log("routes.coffee");
 

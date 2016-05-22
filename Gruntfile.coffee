@@ -234,3 +234,9 @@ module.exports = (grunt) ->
     'uglify:all'
     'jsObfuscate:all'
   ]
+
+  grunt.registerTask 'assets_dev', [
+    'sass'
+    'coffee:joined'
+    'bower_concat:all'
+  ]
