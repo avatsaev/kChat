@@ -111,7 +111,7 @@ module.exports = (grunt) ->
         shared:
           overwrite: true
           dirs: [
-            "node_modules", "tmp", "log", "public/storage", "private/storage"
+            "node_modules", "bower_components", "tmp", "log", "public/storage", "private/storage"
           ]
         assets:
             paths: [
@@ -125,13 +125,13 @@ module.exports = (grunt) ->
         shared:
           overwrite: true
           dirs: [
-            "node_modules", "tmp", "log"
+            "node_modules", "bower_components", "tmp", "log", "public/storage", "private/storage"
           ]
 
 
   grunt.shipit.on 'init', -> grunt.task.run 'stop'
 
-  grunt.shipit.on 'updated', -> grunt.task.run 'install'
+  grunt.shipit.on 'updated', -> grunt.task.run ['npm_install', "bower_install"]
 
   grunt.shipit.on 'published', -> grunt.task.run 'start'
 
@@ -145,7 +145,7 @@ module.exports = (grunt) ->
                           fi",
                           done
 
-  grunt.registerTask 'install', ->
+  grunt.registerTask 'npm_install', ->
     done = @async()
 
 
@@ -153,6 +153,16 @@ module.exports = (grunt) ->
                           cd #{current_deploy_path} &&
                           npm install",
                           done
+
+  grunt.registerTask 'bower_install', ->
+    done = @async()
+
+
+    grunt.shipit.remote " source ~/.nvm/nvm.sh &&
+                          cd #{current_deploy_path} &&
+                          bower install",
+                          done
+
 
   grunt.registerTask 'start', ->
     done = @async()
