@@ -222,5 +222,5 @@ module.exports = (grunt) ->
     'coffee:joined'
     'bower_concat:all'
     'uglify:all'
-    'obfuscator'
+    #'obfuscator'
   ]
