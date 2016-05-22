@@ -142,12 +142,9 @@ module.exports = (grunt) ->
 
   grunt.shipit.on 'init', -> grunt.task.run 'stop'
 
-  grunt.shipit.on 'updated', -> grunt.task.run [
-    "npm_install",
-    "bower_install"
-  ]
-
   grunt.shipit.on 'published', -> grunt.task.run [
+    'npm_install'
+    'bower_install'
     'assets_compile',
     'start'
   ]
