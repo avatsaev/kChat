@@ -144,8 +144,8 @@ module.exports = (grunt) ->
 
   grunt.shipit.on 'updated', -> grunt.task.run [
     "npm_install",
-    "bower_install",
-    "assets_compile"
+    "bower_install"
+    #"assets_compile"
   ]
 
   grunt.shipit.on 'published', -> grunt.task.run 'start'
@@ -223,5 +223,5 @@ module.exports = (grunt) ->
     'coffee:joined'
     'bower_concat:all'
     'uglify:all'
-    #'obfuscator'
+    'obfuscator'
   ]
