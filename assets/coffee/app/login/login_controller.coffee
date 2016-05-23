@@ -4,8 +4,13 @@ console.log "login_ctrl.coffee"
 app.controller 'LoginCtrl', [
   '$scope'
   '$rootScope'
-  ($scope, $rootScope) ->
+  '$stateParams'
+  '$state'
+
+  ($scope, $rootScope, $stateParams, $state) ->
+
     $scope.login =
+      
       username: ""
       channel: ""
 

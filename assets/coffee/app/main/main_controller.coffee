@@ -4,8 +4,12 @@ console.log "main_ctrl.coffee"
 app.controller 'MainCtrl', [
   '$scope'
   '$rootScope'
-  ($scope, $rootScope) ->
-    console.log "main controller loaded"
+  '$stateParams'
+  '$state'
+
+  ($scope, $rootScope, $stateParams, $state) ->
+
+    console.log "MainCtrl"
     $scope.on_login = ->
       console.log "login:"
       console.log $scope.login

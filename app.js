@@ -56,6 +56,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', root_route);
+//app.use('/home', root_route);
 
 
 

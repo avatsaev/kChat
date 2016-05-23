@@ -6,12 +6,20 @@ app = angular.module('KC', ['ui.router', 'btford.socket-io']);
 
 console.log("chat.coffee");
 
+console.log("channel_ctrl.coffee");
+
+app.controller('ChannelsCtrl.show', [
+  '$scope', '$rootScope', '$stateParams', '$state', function($scope, $rootScope, $stateParams, $state) {
+    return console.log("ChannelsCtrl");
+  }
+]);
+
 console.log("config.coffee");
 
 console.log("login_ctrl.coffee");
 
 app.controller('LoginCtrl', [
-  '$scope', '$rootScope', function($scope, $rootScope) {
+  '$scope', '$rootScope', '$stateParams', '$state', function($scope, $rootScope, $stateParams, $state) {
     $scope.login = {
       username: "",
       channel: ""
@@ -30,8 +38,8 @@ app.factory('app_socket', function(socketFactory) {
 console.log("main_ctrl.coffee");
 
 app.controller('MainCtrl', [
-  '$scope', '$rootScope', function($scope, $rootScope) {
-    console.log("main controller loaded");
+  '$scope', '$rootScope', '$stateParams', '$state', function($scope, $rootScope, $stateParams, $state) {
+    console.log("MainCtrl");
     return $scope.on_login = function() {
       console.log("login:");
       return console.log($scope.login);
@@ -42,14 +50,16 @@ app.controller('MainCtrl', [
 console.log("routes.coffee");
 
 app.config([
-  '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  '$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
+    console.log("loading routes");
     $stateProvider.state('home', {
-      url: '/',
+      url: '/home',
       controller: 'MainCtrl',
-      templateUrl: 'views/home/index.html'
+      templateUrl: '/views/home/index.html'
     }).state('channel', {
-      url: "channel/:channel_id",
-      controller: 'ChannelCtrl'
+      url: "/channels/:channel_id",
+      controller: 'ChannelsCtrl.show',
+      templateUrl: '/views/channels/show.html'
     });
     return $urlRouterProvider.otherwise('home');
   }
