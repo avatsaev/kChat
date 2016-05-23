@@ -1,2 +1,2 @@
-
-app = angular.module('KC', ['btford.socket-io']);
+console.log "app.coffee"
+app = angular.module('KC', ['ui.router','btford.socket-io']);

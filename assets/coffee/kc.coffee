@@ -39,21 +39,21 @@ $(document).ready ->
 
   $('form').submit (event) ->
     event.preventDefault()
-
-  $('#join').click ->
-    if $('#name').val() != ''
-      username = $('#name').val()
-    if $('#frq').val() != ''
-      frq = $('#frq').val()
-    userData =
-      'username': username
-      'frq': frq
-    socket.emit 'join', JSON.stringify(userData)
-    $('#msgs').append '<li>Connecting...</li>'
-    $('#login-container').hide()
-    $('#chat').show 'slow'
-    $('#msg').focus()
-    ready = true
+  #
+  # $('#join').click ->
+  #   if $('#name').val() != ''
+  #     username = $('#name').val()
+  #   if $('#frq').val() != ''
+  #     frq = $('#frq').val()
+  #   userData =
+  #     'username': username
+  #     'frq': frq
+  #   socket.emit 'join', JSON.stringify(userData)
+  #   $('#msgs').append '<li>Connecting...</li>'
+  #   $('#login-container').hide()
+  #   $('#chat').show 'slow'
+  #   $('#msg').focus()
+  #   ready = true
 
   $('#send').click ->
     sendMsg()

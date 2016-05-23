@@ -19,6 +19,7 @@
     "angular": "angularjs#^1.5.5",
     "bootstrap": "^3.3.6",
     "jquery": "^2.2.3",
-    "bootstrap-datepicker": "^1.6.1"
+    "bootstrap-datepicker": "^1.6.1",
+    "angular-ui-router": "^0.3.0"
   }
 }

@@ -5,8 +5,11 @@ app.controller 'MainCtrl', [
   '$scope'
   '$rootScope'
   ($scope, $rootScope) ->
-    $scope.test = 'Hello sssworld!'
+    console.log "main controller loaded"
+    $scope.on_login = ->
+      console.log "login:"
+      console.log $scope.login
 
-    $rootScope.on 'user:login', (data) ->
-      console.log data
+    # $rootScope.on 'user:login', (data) ->
+    #   console.log data
 ]

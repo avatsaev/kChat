@@ -1,6 +1,8 @@
 var app, app_focus, escapeHtml, frq, messages, ready, username;
 
-app = angular.module('KC', ['btford.socket-io']);
+console.log("app.coffee");
+
+app = angular.module('KC', ['ui.router', 'btford.socket-io']);
 
 console.log("chat.coffee");
 
@@ -8,15 +10,16 @@ console.log("config.coffee");
 
 console.log("login_ctrl.coffee");
 
-app.controller('MainCtrl', [
+app.controller('LoginCtrl', [
   '$scope', '$rootScope', function($scope, $rootScope) {
     $scope.login = {
       username: "",
       channel: ""
     };
-    return $rootScope.on('user:login', function(data) {
-      return console.log(data);
-    });
+    return $scope.on_login = function() {
+      console.log("login:");
+      return console.log($scope.login);
+    };
   }
 ]);
 
@@ -28,14 +31,29 @@ console.log("main_ctrl.coffee");
 
 app.controller('MainCtrl', [
   '$scope', '$rootScope', function($scope, $rootScope) {
-    $scope.test = 'Hello sssworld!';
-    return $rootScope.on('user:login', function(data) {
-      return console.log(data);
-    });
+    console.log("main controller loaded");
+    return $scope.on_login = function() {
+      console.log("login:");
+      return console.log($scope.login);
+    };
   }
 ]);
 
 console.log("routes.coffee");
+
+app.config([
+  '$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    $stateProvider.state('home', {
+      url: '/',
+      controller: 'MainCtrl',
+      templateUrl: 'views/home/index.html'
+    }).state('channel', {
+      url: "channel/:channel_id",
+      controller: 'ChannelCtrl'
+    });
+    return $urlRouterProvider.otherwise('home');
+  }
+]);
 
 ready = void 0;
 
@@ -84,25 +102,6 @@ $(document).ready(function() {
   $('#name').focus();
   $('form').submit(function(event) {
     return event.preventDefault();
-  });
-  $('#join').click(function() {
-    var userData;
-    if ($('#name').val() !== '') {
-      username = $('#name').val();
-    }
-    if ($('#frq').val() !== '') {
-      frq = $('#frq').val();
-    }
-    userData = {
-      'username': username,
-      'frq': frq
-    };
-    socket.emit('join', JSON.stringify(userData));
-    $('#msgs').append('<li>Connecting...</li>');
-    $('#login-container').hide();
-    $('#chat').show('slow');
-    $('#msg').focus();
-    return ready = true;
   });
   $('#send').click(function() {
     return sendMsg();

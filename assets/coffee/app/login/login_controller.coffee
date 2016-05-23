@@ -1,7 +1,7 @@
 console.log "login_ctrl.coffee"
 
 
-app.controller 'MainCtrl', [
+app.controller 'LoginCtrl', [
   '$scope'
   '$rootScope'
   ($scope, $rootScope) ->
@@ -9,6 +9,8 @@ app.controller 'MainCtrl', [
       username: ""
       channel: ""
 
-    $rootScope.on 'user:login', (data) ->
-      console.log data
+    $scope.on_login = ->
+      console.log "login:"
+      console.log $scope.login
+
 ]
