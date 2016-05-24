@@ -13,11 +13,12 @@
 
       .form-group
 
-        %input#name.form-control{"ng-model" => "login.username", :placeholder => "Your username...", :type => "text"}/
+        %input#name.form-control{"ng-model" => "login.username", :placeholder => "Your username...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
 
       .form-group
 
-        %input#frq.form-control{"ng-model" => "login.channel", :placeholder => "Frequency (MHz)...", :type => "text"}/
+
+        %input#frq.form-control{"ng-model" => "login.channel", :placeholder => "Frequency (MHz)...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
 
       .form-group
 

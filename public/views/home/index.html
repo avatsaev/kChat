@@ -9,10 +9,10 @@
   <div class='col-md-12' id='login-form'>
     <form>
       <div class='form-group'>
-        <input class='form-control' id='name' ng-model='login.username' placeholder='Your username...' type='text'>
+        <input class='form-control' id='name' ng-model='login.username' placeholder='Your username...' type='text' ui-keypress="{13:'on_join($event)'}">
       </div>
       <div class='form-group'>
-        <input class='form-control' id='frq' ng-model='login.channel' placeholder='Frequency (MHz)...' type='text'>
+        <input class='form-control' id='frq' ng-model='login.channel' placeholder='Frequency (MHz)...' type='text' ui-keypress="{13:'on_join($event)'}">
       </div>
       <div class='form-group'>
         <input class='form-control btn btn-primary' id='join' name='join' ng-click='on_login()' type='button' value='Join'>
