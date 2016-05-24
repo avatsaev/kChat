@@ -154,6 +154,11 @@ module.exports = (grunt) ->
 
         dependencies:
           'bootstrap-datepicker': 'bootstrap'
+          'angular-bootstrap':    'angular'
+          'angular-touch':        'angular'
+          'angular-animate':      'angular'
+
+
 
 
     shipit:

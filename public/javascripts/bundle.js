@@ -1,6 +1,6 @@
 var app;
 
-app = angular.module('KC', ['ui.router']);
+app = angular.module('KC', ['ui.router', 'ui.bootstrap', 'ngTouch', 'ngAnimate']);
 
 console.log("chat.coffee");
 

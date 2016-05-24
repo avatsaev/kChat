@@ -1,2 +1,2 @@
 
-app = angular.module('KC', ['ui.router']);
+app = angular.module('KC', ['ui.router', 'ui.bootstrap', 'ngTouch', 'ngAnimate']);
