@@ -99,8 +99,8 @@ app.use(function(err, req, res, next) {
 socket.on("connection", function (client) {
 
   client.on("join", function(data){
-
-    var userData = JSON.parse(data);
+    console.log(data);
+    var userData = data;
 
     user = {}
 
@@ -159,7 +159,7 @@ socket.on("connection", function (client) {
       return;
     }
 
-    var inData = JSON.parse(data);
+    var inData = data;
 
     if(inData["msg"]==undefined || inData["msg"]=="" || inData["frq"]==undefined || inData["frq"]=="") return;
 

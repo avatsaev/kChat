@@ -6,16 +6,16 @@
     <span class='title'>Welcome to KawaChat</span>
     <span class='subtitle'>Quick way to exchange messages</span>
   </div>
-  <div class='col-md-12' id='login-form' ng-controller='LoginCtrl'>
+  <div class='col-md-12' id='login-form'>
     <form>
       <div class='form-group'>
         <input class='form-control' id='name' ng-model='login.username' placeholder='Your username...' type='text'>
       </div>
       <div class='form-group'>
-        <input class='form-control' id='frq' ng-model='user.channel' placeholder='Frequency (MHz)...' type='text'>
+        <input class='form-control' id='frq' ng-model='login.channel' placeholder='Frequency (MHz)...' type='text'>
       </div>
       <div class='form-group'>
-        <input class='form-control btn btn-primary' id='join' name='join' ng-click='on_login' type='button' value='Join'>
+        <input class='form-control btn btn-primary' id='join' name='join' ng-click='on_login()' type='button' value='Join'>
       </div>
     </form>
   </div>

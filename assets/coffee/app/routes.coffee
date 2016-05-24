@@ -1,5 +1,3 @@
-console.log "routes.coffee"
-
 
 
 app.config [
@@ -11,11 +9,9 @@ app.config [
   ($stateProvider, $urlRouterProvider, $locationProvider) ->
 
 
-    console.log "loading routes"
-
     $stateProvider.state('home',
       url: '/home'
-      controller: 'MainCtrl'
+      controller: 'HomeCtrl'
       templateUrl: '/views/home/index.html'
 
     ).state('channel',

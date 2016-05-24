@@ -62,11 +62,10 @@ module.exports = (grunt) ->
           'public/javascripts/bundle.js': ['assets/coffee/**/*.coffee']
 
     haml:
-
       all:
         options:
           style: 'expanded'
-        files:[
+        files: [
           expand: true,
           cwd:'assets/views'
           src: '**/*.haml'
@@ -133,7 +132,7 @@ module.exports = (grunt) ->
           livereload: true
 
       haml:
-        files: 'assets/haml/**/*.haml'
+        files: 'assets/views/**/*.haml'
         tasks: ['haml:all']
         options:
           spawn: false

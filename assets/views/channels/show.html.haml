@@ -11,5 +11,6 @@
       %row
         .col-xs-9.col-md-11
           %input#msg.form-control{:placeholder => "Your message...", :type => "text"}/
+
         .col-xs-3.col-md-1
-          %input#send.btn.btn-success.form-control{:name => "send", :type => "button", :value => "Send"}/
+          %input#send.btn.btn-success.form-control{:name => "send", :type => "button", :value => "Send", "ng-click" => "send_msg()"}
