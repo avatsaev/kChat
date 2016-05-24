@@ -122,7 +122,7 @@ module.exports = (grunt) ->
         repositoryUrl: repo_url
         servers: [ "#{user}@#{server_url}" ]
         ignores: [
-          '.git'
+          '.git', 'node_modules'
         ]
         dependencies: ['node_modules']
         symlinks: ['node_modules']
@@ -178,7 +178,7 @@ module.exports = (grunt) ->
 
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           cd #{current_deploy_path} &&
-                          npm install --production",
+                          npm install",
                           done
 
   grunt.registerTask 'bower_install', ->
