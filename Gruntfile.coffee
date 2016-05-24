@@ -178,7 +178,7 @@ module.exports = (grunt) ->
 
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
                           cd #{current_deploy_path} &&
-                          npm install",
+                          npm install --production",
                           done
 
   grunt.registerTask 'bower_install', ->
