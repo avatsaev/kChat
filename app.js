@@ -4,6 +4,8 @@
 */
 
 var port = process.env.PORT || 3002;
+var env = process.env.NODE_ENV || "development";
+
 var express = require('express');
 var http = require('http');
 var fs = require('fs');
@@ -38,6 +40,9 @@ chat.socket = socket;
 console.log("---------------------------------SERVER_BOOT-----------------------------------PORT_"+port);
 // all environments
 app.set('port', port);
+app.set('env', env);
+app.locals.env = app.get('env')
+
 app.set('view engine', 'jade');
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'jade');
@@ -51,6 +56,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', root_route);
+//app.use('/home', root_route);
 
 
 
@@ -93,8 +99,8 @@ app.use(function(err, req, res, next) {
 socket.on("connection", function (client) {
 
   client.on("join", function(data){
-
-    var userData = JSON.parse(data);
+    console.log(data);
+    var userData = data;
 
     user = {}
 
@@ -153,7 +159,7 @@ socket.on("connection", function (client) {
       return;
     }
 
-    var inData = JSON.parse(data);
+    var inData = data;
 
     if(inData["msg"]==undefined || inData["msg"]=="" || inData["frq"]==undefined || inData["frq"]=="") return;
 

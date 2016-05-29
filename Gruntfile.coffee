@@ -11,6 +11,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-haml2html'
   grunt.loadNpmTasks 'js-obfuscator'
 
 
@@ -59,6 +60,20 @@ module.exports = (grunt) ->
           bare: true
         files:
           'public/javascripts/bundle.js': ['assets/coffee/**/*.coffee']
+
+    haml:
+      all:
+        options:
+          style: 'expanded'
+        files: [
+          expand: true,
+          cwd:'assets/views'
+          src: '**/*.haml'
+          dest: 'public/views'
+          ext : '.html'
+        ]
+
+
     cssmin:
       target:
         files: [
@@ -101,6 +116,32 @@ module.exports = (grunt) ->
           'public/javascripts/bundle.min.js'
         ]
 
+    watch:
+      coffee:
+        files: [ 'assets/coffee/**/*.coffee' ]
+        tasks: [ 'coffee:joined']
+        options:
+          spawn: false
+          livereload: true
+
+      sass:
+        files: ['assets/sass/**/*.sass']
+        tasks: [ 'sass']
+        options:
+          spawn: false
+          livereload: true
+
+      haml:
+        files: 'assets/views/**/*.haml'
+        tasks: ['haml:all']
+        options:
+          spawn: false
+          livereload: true
+
+
+
+
+
 
     bower_concat:
 
@@ -113,6 +154,11 @@ module.exports = (grunt) ->
 
         dependencies:
           'bootstrap-datepicker': 'bootstrap'
+          'angular-bootstrap':    'angular'
+          'angular-touch':        'angular'
+          'angular-animate':      'angular'
+
+
 
 
     shipit:
@@ -230,7 +276,15 @@ module.exports = (grunt) ->
     'sass'
     'cssmin'
     'coffee:joined'
+    'haml:all'
     'bower_concat:all'
     'uglify:all'
     'jsObfuscate:all'
   ]
+
+
+
+  # grunt.registerTask 'watch_dev', [
+  #   'watch:coffee'
+  #   'watch:sass'
+  # ]

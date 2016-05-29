@@ -1,0 +1,25 @@
+
+#login-container.row
+
+  #login.col-md-12.text-center
+    %span#login_logo
+      %img{:src => "images/logo@2x.png"}/
+    %span.title Welcome to KawaChat
+    %span.subtitle Quick way to exchange messages
+
+  #login-form.col-md-12
+
+    %form
+
+      .form-group
+
+        %input#name.form-control{"ng-model" => "login.username", :placeholder => "Your username...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
+
+      .form-group
+
+
+        %input#frq.form-control{"ng-model" => "login.channel", :placeholder => "Frequency (MHz)...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
+
+      .form-group
+
+        %input#join.form-control.btn.btn-primary{:name => "join", "ng-click" => "on_login()", :type => "button", :value => "Join"}/
