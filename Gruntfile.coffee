@@ -168,10 +168,10 @@ module.exports = (grunt) ->
         repositoryUrl: repo_url
         servers: [ "#{user}@#{server_url}" ]
         ignores: [
-          '.git', 'node_modules'
+          '.git'
         ]
         dependencies: ['node_modules']
-        symlinks: ['node_modules']
+        symlinks:   ['node_modules']
         keepReleases: 10
       staging:
         branch: 'staging'
@@ -201,7 +201,7 @@ module.exports = (grunt) ->
   grunt.shipit.on 'published', -> grunt.task.run [
     'npm_install'
     'bower_install'
-    'assets_compile'
+    #'assets_compile'
     'start'
   ]
 
