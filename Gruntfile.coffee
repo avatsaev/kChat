@@ -211,11 +211,8 @@ module.exports = (grunt) ->
   grunt.registerTask 'stop', ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
-                          if [ -f #{forever_pid_path} ]; then
-                            cat #{forever_pid_path} | xargs #{forever} stop;
-                          else
-                            echo 'server not running';
-                          fi",
+                          cat #{forever_pid_path} | xargs #{forever} stop &>/dev/null;
+                          $?=0;",
                           done
 
   grunt.registerTask 'npm_install', ->
@@ -245,23 +242,18 @@ module.exports = (grunt) ->
                           grunt assets",
                           done
 
-
-
   grunt.registerTask 'start', ->
     done = @async()
     grunt.shipit.remote " source ~/.nvm/nvm.sh &&
-                          if [ ! -f #{forever_pid_path} ]; then
-                            export NODE_ENV=#{get_env()} &&
-                            export PORT=#{deploy_port} &&
-                            #{forever} start
-                            --uid #{forever_pid}
-                            --pidFile=#{forever_pid_path}
-                            -l #{shared_path}/log/#{get_env()}.log
-                            -a -n 5000
-                             #{current_deploy_path}/app.js ;
-                          else
-                            echo 'server already running';
-                          fi ",
+                          export NODE_ENV=#{get_env()} &&
+                          export PORT=#{deploy_port} &&
+                          #{forever} start
+                          --uid #{forever_pid}
+                          --pidFile=#{forever_pid_path}
+                          -l #{shared_path}/log/#{get_env()}.log
+                          -a -n 5000
+                          #{current_deploy_path}/app.js ;
+                          ",
                           done
 
   grunt.registerTask 'restart', ->
