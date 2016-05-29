@@ -15,10 +15,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'js-obfuscator'
 
 
-  get_env = ->
-    tasks = grunt.cli.tasks[0]
-    environment = tasks.split(':')
-    environment[1]
+  get_env = -> grunt.cli.tasks[0].split(':')[1]
+
 
   ports =
     'staging': 3002
