@@ -25,7 +25,7 @@ module.exports = (grunt) ->
   app_name = "kawachat"
   nvm_version = 'v6.1.0'
   user = "ops"
-  repo_url = 'git@git.vatsaev.com:kawachat.git'
+  repo_url = 'git@projects.vatsaev.com:dev-team/kawachat.git'
   server_url = "cloud.vatsaev.com"
 
   node_bin_path = '~/.nvm/versions/node/' + nvm_version + '/bin'
