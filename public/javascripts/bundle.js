@@ -104,7 +104,7 @@ app.config([
 app.factory('Socket', [
   '$rootScope', function($rootScope) {
     var socket;
-    socket = io();
+    socket = io("//localhost:3002");
     return {
       on: function(eventName, callback) {
         return socket.on(eventName, function() {
