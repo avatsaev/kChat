@@ -104,7 +104,7 @@ app.config([
 app.factory('Socket', [
   '$rootScope', function($rootScope) {
     var socket;
-    socket = io("//localhost:3002");
+    socket = io("//kchat-backend-env.us-east-1.elasticbeanstalk.com");
     return {
       on: function(eventName, callback) {
         return socket.on(eventName, function() {
