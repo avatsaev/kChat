@@ -8,9 +8,6 @@ app.controller 'HomeCtrl', [
 
   ($scope, $rootScope, $stateParams, $state, User) ->
 
-    $scope.login =
-      username: ""
-      channel: ""
 
     $scope.on_login = ->
 

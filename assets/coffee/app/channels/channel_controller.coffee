@@ -1,8 +1,3 @@
-console.log "chat.coffee"
-
-
-console.log "channel_ctrl.coffee"
-
 
 app.controller 'ChannelsCtrl.show', [
   '$scope'
@@ -23,7 +18,7 @@ app.controller 'ChannelsCtrl.show', [
       if me
         add_class = 'me-msg'
 
-      $("<li class='msg-container'><strong><span class='username-label'> #{user} </span></strong>:  #{$scope.escapeHtml(msg).substring(0, 512)} </li>").appendTo('#msgs').addClass(add_class).show 'fast'
+      $("<li class='msg-container'><strong><span class='username-label'> #{user} </span></strong>:  #{$scope.escapeHtml(msg).substring(0, 512)} </li>").appendTo('#msgs').addClass(add_class)
 
       $('#msg').val ''
       n = $(document).height()
@@ -38,15 +33,15 @@ app.controller 'ChannelsCtrl.show', [
       outData =
         'msg': msg
         'frq': User.channel
+        'usr': User.name
       Socket.emit 'send', outData
 
     $scope.escapeHtml = (text) ->
       text.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;').replace /"/g, '&quot;'
 
-    console.log User
 
     Socket.on 'update', (msg) ->
-      $('#msgs').append '<li>' + msg + '</li>'
+      $('#msgs').append '<li class="system-msg">' + msg + '</li>'
 
     Socket.on 'chat', (who, msg) ->
       $scope.append_msg msg, who

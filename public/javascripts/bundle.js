@@ -2,10 +2,6 @@ var app;
 
 app = angular.module('KC', ['ui.router', 'ui.bootstrap', 'ngTouch', 'ngAnimate', "ui.event", "ui.keypress"]);
 
-console.log("chat.coffee");
-
-console.log("channel_ctrl.coffee");
-
 app.controller('ChannelsCtrl.show', [
   '$scope', '$rootScope', '$stateParams', '$state', 'User', 'Socket', function($scope, $rootScope, $stateParams, $state, User, Socket) {
     if (User.is_empty()) {
@@ -18,7 +14,7 @@ app.controller('ChannelsCtrl.show', [
       if (me) {
         add_class = 'me-msg';
       }
-      $("<li class='msg-container'><strong><span class='username-label'> " + user + " </span></strong>:  " + ($scope.escapeHtml(msg).substring(0, 512)) + " </li>").appendTo('#msgs').addClass(add_class).show('fast');
+      $("<li class='msg-container'><strong><span class='username-label'> " + user + " </span></strong>:  " + ($scope.escapeHtml(msg).substring(0, 512)) + " </li>").appendTo('#msgs').addClass(add_class);
       $('#msg').val('');
       n = $(document).height();
       return $('html, body').animate({
@@ -34,16 +30,16 @@ app.controller('ChannelsCtrl.show', [
       $scope.append_msg(msg, User.name, true);
       outData = {
         'msg': msg,
-        'frq': User.channel
+        'frq': User.channel,
+        'usr': User.name
       };
       return Socket.emit('send', outData);
     };
     $scope.escapeHtml = function(text) {
       return text.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
     };
-    console.log(User);
     Socket.on('update', function(msg) {
-      return $('#msgs').append('<li>' + msg + '</li>');
+      return $('#msgs').append('<li class="system-msg">' + msg + '</li>');
     });
     Socket.on('chat', function(who, msg) {
       return $scope.append_msg(msg, who);
@@ -59,10 +55,6 @@ console.log("config.coffee");
 
 app.controller('HomeCtrl', [
   '$scope', '$rootScope', '$stateParams', '$state', 'User', function($scope, $rootScope, $stateParams, $state, User) {
-    $scope.login = {
-      username: "",
-      channel: ""
-    };
     return $scope.on_login = function() {
       if ($scope.login.username === "" || $scope.login.channel === "") {
         User.generate();
@@ -104,7 +96,7 @@ app.config([
 app.factory('Socket', [
   '$rootScope', function($rootScope) {
     var socket;
-    socket = io("//kchat-backend-dev.us-west-2.elasticbeanstalk.com");
+    socket = io("//localhost:3002");
     return {
       on: function(eventName, callback) {
         return socket.on(eventName, function() {

@@ -1,25 +1,26 @@
 
-#login-container.row
+#login-container.container
 
-  #login.col-md-12.text-center
-    %span#login_logo
+  #login.col-sm-12.text-center
+
+    %span#login-logo
       %img{:src => "images/logo@2x.png"}/
+
     %span.title Welcome to KawaChat
     %span.subtitle Quick way to exchange messages
 
-  #login-form.col-md-12
-
-    %form
-
-      .form-group
-
-        %input#name.form-control{"ng-model" => "login.username", :placeholder => "Your username...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
-
-      .form-group
+  #login-form.col-sm-6.col-sm-offset-3
 
 
-        %input#frq.form-control{"ng-model" => "login.channel", :placeholder => "Frequency (MHz)...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
+    .form-group.row
 
-      .form-group
+      %input#name.form-control{"ng-model" => "login.username", :placeholder => "Your username...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
 
-        %input#join.form-control.btn.btn-primary{:name => "join", "ng-click" => "on_login()", :type => "button", :value => "Join"}/
+    .form-group.row
+
+
+      %input#frq.form-control{"ng-model" => "login.channel", :placeholder => "Frequency (MHz)...", :type => "text", "ui-keypress"=>"{13:'on_join($event)'}"}/
+
+    .form-group.row
+
+      %input#join.form-control.btn.btn-primary{:name => "join", "ng-click" => "on_login()", :type => "button", :value => "Join"}/
