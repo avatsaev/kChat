@@ -11,7 +11,7 @@ app.controller 'HomeCtrl', [
 
     $scope.on_login = ->
 
-      if $scope.login.username == "" or $scope.login.channel == ""
+      if !$scope.login or !$scope.login.username or !$scope.login.channel
         User.generate()
       else
         User.name = $scope.login.username

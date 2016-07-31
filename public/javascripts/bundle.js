@@ -56,7 +56,7 @@ console.log("config.coffee");
 app.controller('HomeCtrl', [
   '$scope', '$rootScope', '$stateParams', '$state', 'User', function($scope, $rootScope, $stateParams, $state, User) {
     return $scope.on_login = function() {
-      if ($scope.login.username === "" || $scope.login.channel === "") {
+      if (!$scope.login || !$scope.login.username || !$scope.login.channel) {
         User.generate();
       } else {
         User.name = $scope.login.username;
@@ -71,7 +71,6 @@ app.controller('HomeCtrl', [
 
 app.controller('MainCtrl', [
   '$scope', '$rootScope', '$stateParams', '$state', function($scope, $rootScope, $stateParams, $state) {
-    console.log("MainCtrl");
     return $rootScope.$on('user:login', function(data) {
       return console.log(data);
     });
@@ -96,7 +95,7 @@ app.config([
 app.factory('Socket', [
   '$rootScope', function($rootScope) {
     var socket;
-    socket = io("//localhost:3002");
+    socket = io("//kchat-backend-dev.us-west-2.elasticbeanstalk.com");
     return {
       on: function(eventName, callback) {
         return socket.on(eventName, function() {

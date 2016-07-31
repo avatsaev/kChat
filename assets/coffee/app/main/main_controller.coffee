@@ -5,9 +5,7 @@ app.controller 'MainCtrl', [
   '$state'
 
   ($scope, $rootScope, $stateParams, $state) ->
-
-    console.log "MainCtrl"
-
+    
     $rootScope.$on 'user:login', (data) ->
       console.log data
 ]
