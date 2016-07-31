@@ -1,17 +1,19 @@
 doctype html
 html(lang='en')
   head
-    script(src='//kchat-backend-env.us-east-1.elasticbeanstalk.com/socket.io/socket.io.js')
+  
       
-    //- base(href = "/")
-
+    script(src='//kchat-backend-env.us-east-1.elasticbeanstalk.com/socket.io/socket.io.js')
+    
     if env == 'development'
+
       script(src='javascripts/lib.js')
       script(src='javascripts/bundle.js')
       link(rel='stylesheet', type='text/css', href='stylesheets/lib.css')
       link(rel='stylesheet', type='text/css', href='stylesheets/bundle.css')      
       script(src='http://localhost:35729/livereload.js')
     else
+
       script(src='javascripts/lib.min.js')
       script(src='javascripts/bundle.min.js')
       link(rel='stylesheet', type='text/css', href='stylesheets/lib.min.css')
