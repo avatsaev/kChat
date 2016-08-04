@@ -55,7 +55,6 @@ app.controller('ChannelsCtrl.show', [
     });
     return Socket.on('err', function(data) {
       var dialog;
-      console.log(data);
       dialog = ngDialog.open({
         template: "<div class='dialog-contents'> <h2>Error</h2> <p>" + data.msg + "</p> </div>",
         plain: true
@@ -69,8 +68,6 @@ app.controller('ChannelsCtrl.show', [
     });
   }
 ]);
-
-console.log("config.coffee");
 
 app.controller('HomeCtrl', [
   '$scope', '$rootScope', '$stateParams', '$state', 'User', function($scope, $rootScope, $stateParams, $state, User) {
@@ -88,13 +85,7 @@ app.controller('HomeCtrl', [
   }
 ]);
 
-app.controller('MainCtrl', [
-  '$scope', '$rootScope', '$stateParams', '$state', function($scope, $rootScope, $stateParams, $state) {
-    return $rootScope.$on('user:login', function(data) {
-      return console.log(data);
-    });
-  }
-]);
+app.controller('MainCtrl', ['$scope', '$rootScope', '$stateParams', '$state', function($scope, $rootScope, $stateParams, $state) {}]);
 
 app.config([
   '$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -114,7 +105,7 @@ app.config([
 app.factory('Socket', [
   '$rootScope', function($rootScope) {
     var socket;
-    socket = io("//localhost:3002");
+    socket = io("//172.31.13.231");
     return {
       on: function(eventName, callback) {
         return socket.on(eventName, function() {

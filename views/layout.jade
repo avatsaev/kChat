@@ -1,28 +1,26 @@
 doctype html
 html(lang='en')
   head
-  
 
-    script(src='//localhost:3002/socket.io/socket.io.js')
-    
-    if env == 'development'
-
-      script(src='javascripts/lib.js')
-      script(src='javascripts/bundle.js')
-      link(rel='stylesheet', type='text/css', href='stylesheets/lib.css')
-      link(rel='stylesheet', type='text/css', href='stylesheets/bundle.css')      
-      script(src='http://localhost:35729/livereload.js')
-    else
-
+    if config.env == 'production'
+      script(src="#{config.backend.url.production}/socket.io/socket.io.js")
       script(src='javascripts/lib.min.js')
       script(src='javascripts/bundle.min.js')
       link(rel='stylesheet', type='text/css', href='stylesheets/lib.min.css')
       link(rel='stylesheet', type='text/css', href='stylesheets/bundle.min.css')
-      
+    else
+      script(src="#{config.backend.url.development}/socket.io/socket.io.js")
+      script(src='javascripts/lib.js')
+      script(src='javascripts/bundle.js')
+      link(rel='stylesheet', type='text/css', href='stylesheets/lib.css')
+      link(rel='stylesheet', type='text/css', href='stylesheets/bundle.css')
+      script(src='http://localhost:35729/livereload.js')
+
+
     title KChat
     meta(name='viewport', content='width=device-width, user-scalable=no, initial-scale=1')
     
     meta(property='og:image', content='images/logo@2x.png')
   body(ng-app="KC")
-    
+
     block content

@@ -52,7 +52,6 @@ app.controller 'ChannelsCtrl.show', [
     $scope.escapeHtml = (text) ->
       text.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;').replace /"/g, '&quot;'
 
-
     Socket.on 'update', (msg) ->
       $('#msgs').append '<li class="system-msg">' + msg + '</li>'
 
@@ -60,8 +59,6 @@ app.controller 'ChannelsCtrl.show', [
       $scope.append_msg data.msg, data.sender
 
     Socket.on 'err', (data) ->
-
-      console.log data
 
       dialog = ngDialog.open
         template: "

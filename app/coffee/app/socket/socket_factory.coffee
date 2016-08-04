@@ -2,8 +2,8 @@ app.factory 'Socket', [
   '$rootScope'
   ($rootScope) ->
 
-    #socket = io("//kchat-backend-dev2.vuhavghkyx.us-west-2.elasticbeanstalk.com")
-    socket = io("//localhost:3002")
+    socket = io("//172.31.13.231")
+    #socket = io("//localhost:3002")
     {
       on: (eventName, callback) ->
         socket.on eventName, ->

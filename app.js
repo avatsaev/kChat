@@ -6,6 +6,7 @@
 var port = process.env.PORT || 3003;
 var env = process.env.NODE_ENV || "development";
 
+
 var express = require('express');
 var http = require('http');
 var fs = require('fs');
@@ -29,7 +30,19 @@ console.log("---------------------------------SERVER_BOOT-----------------------
 // all environments
 app.set('port', port);
 app.set('env', env);
-app.locals.env = app.get('env')
+
+
+
+app.locals.config = {
+  env: env,
+  backend: {
+    url: {
+      production: "//172.31.13.231",
+      development: "//localhost:3002"
+    }
+  }
+}
+
 
 app.set('view engine', 'jade');
 app.set('views', path.join(__dirname, 'views'));
