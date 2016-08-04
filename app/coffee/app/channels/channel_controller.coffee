@@ -6,12 +6,25 @@ app.controller 'ChannelsCtrl.show', [
   '$state'
   'User'
   'Socket'
+  'ngDialog'
 
-  ($scope, $rootScope, $stateParams, $state, User, Socket) ->
+  ($scope, $rootScope, $stateParams, $state, User, Socket, ngDialog) ->
 
     if User.is_empty()
       User.generate()
       User.channel = $stateParams.channel_id
+
+    Socket.emit "join",
+      username: User.name
+      frq: User.channel
+
+
+    $scope.$on "$destroy", ->
+      Socket.remove_listener('update')
+      Socket.remove_listener('err')
+      Socket.remove_listener('chat')
+
+
 
     $scope.append_msg = (msg, user, me) ->
       add_class = ''
@@ -43,11 +56,30 @@ app.controller 'ChannelsCtrl.show', [
     Socket.on 'update', (msg) ->
       $('#msgs').append '<li class="system-msg">' + msg + '</li>'
 
-    Socket.on 'chat', (who, msg) ->
-      $scope.append_msg msg, who
+    Socket.on 'chat', (data) ->
+      $scope.append_msg data.msg, data.sender
 
-    Socket.emit "join",
-      username: User.name
-      frq: User.channel
+    Socket.on 'err', (data) ->
+
+      console.log data
+
+      dialog = ngDialog.open
+        template: "
+          <div class='dialog-contents'>
+            <h2>Error</h2>
+            <p>#{data.msg}</p>
+          </div>
+        ",
+        plain: true
+
+      dialog.closePromise.then  (data) ->
+        Socket.remove_listener('update')
+        Socket.remove_listener('err')
+        Socket.remove_listener('chat')
+        $state.go "home"
+
+
+
+
 
 ]

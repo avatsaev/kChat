@@ -1,13 +1,22 @@
 var app;
 
-app = angular.module('KC', ['ui.router', 'ui.bootstrap', 'ngTouch', 'ngAnimate', "ui.event", "ui.keypress"]);
+app = angular.module('KC', ['ui.router', 'ui.bootstrap', 'ngTouch', 'ngDialog', 'ngAnimate', "ui.event", "ui.keypress"]);
 
 app.controller('ChannelsCtrl.show', [
-  '$scope', '$rootScope', '$stateParams', '$state', 'User', 'Socket', function($scope, $rootScope, $stateParams, $state, User, Socket) {
+  '$scope', '$rootScope', '$stateParams', '$state', 'User', 'Socket', 'ngDialog', function($scope, $rootScope, $stateParams, $state, User, Socket, ngDialog) {
     if (User.is_empty()) {
       User.generate();
       User.channel = $stateParams.channel_id;
     }
+    Socket.emit("join", {
+      username: User.name,
+      frq: User.channel
+    });
+    $scope.$on("$destroy", function() {
+      Socket.remove_listener('update');
+      Socket.remove_listener('err');
+      return Socket.remove_listener('chat');
+    });
     $scope.append_msg = function(msg, user, me) {
       var add_class, n;
       add_class = '';
@@ -41,12 +50,22 @@ app.controller('ChannelsCtrl.show', [
     Socket.on('update', function(msg) {
       return $('#msgs').append('<li class="system-msg">' + msg + '</li>');
     });
-    Socket.on('chat', function(who, msg) {
-      return $scope.append_msg(msg, who);
+    Socket.on('chat', function(data) {
+      return $scope.append_msg(data.msg, data.sender);
     });
-    return Socket.emit("join", {
-      username: User.name,
-      frq: User.channel
+    return Socket.on('err', function(data) {
+      var dialog;
+      console.log(data);
+      dialog = ngDialog.open({
+        template: "<div class='dialog-contents'> <h2>Error</h2> <p>" + data.msg + "</p> </div>",
+        plain: true
+      });
+      return dialog.closePromise.then(function(data) {
+        Socket.remove_listener('update');
+        Socket.remove_listener('err');
+        Socket.remove_listener('chat');
+        return $state.go("home");
+      });
     });
   }
 ]);
@@ -57,7 +76,7 @@ app.controller('HomeCtrl', [
   '$scope', '$rootScope', '$stateParams', '$state', 'User', function($scope, $rootScope, $stateParams, $state, User) {
     return $scope.on_login = function() {
       if (!$scope.login || !$scope.login.username || !$scope.login.channel) {
-        User.generate();
+        User.generate($scope.login);
       } else {
         User.name = $scope.login.username;
         User.channel = $scope.login.channel;
@@ -95,7 +114,7 @@ app.config([
 app.factory('Socket', [
   '$rootScope', function($rootScope) {
     var socket;
-    socket = io("//kchat-backend-dev2.vuhavghkyx.us-west-2.elasticbeanstalk.com");
+    socket = io("//localhost:3002");
     return {
       on: function(eventName, callback) {
         return socket.on(eventName, function() {
@@ -116,6 +135,12 @@ app.factory('Socket', [
             }
           });
         });
+      },
+      disconnect: function() {
+        return socket.disconnect();
+      },
+      remove_listener: function(event) {
+        return socket.removeListener(event);
       }
     };
   }
@@ -128,9 +153,20 @@ app.factory('User', [
       name: "",
       channel: ""
     };
-    user.generate = function() {
-      user.name = 'User_' + Math.floor(Math.random() * 110000);
-      user.channel = "1";
+    user.generate = function(data) {
+      if (data == null) {
+        data = {};
+      }
+      if (data.username) {
+        user.name = data.username;
+      } else {
+        user.name = 'User_' + Math.floor(Math.random() * 110000);
+      }
+      if (data.channel) {
+        user.channel = data.channel;
+      } else {
+        user.channel = "1";
+      }
     };
     user.is_empty = function() {
       return user.name === "" || user.channel === "";

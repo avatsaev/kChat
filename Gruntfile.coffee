@@ -49,7 +49,7 @@ module.exports = (grunt) ->
         style: 'expanded'
       dist:
         files:
-          'public/stylesheets/bundle.css': 'assets/sass/bundle.sass'
+          'public/stylesheets/bundle.css': 'app/sass/bundle.sass'
 
     coffee:
       joined:
@@ -57,7 +57,7 @@ module.exports = (grunt) ->
           join: true
           bare: true
         files:
-          'public/javascripts/bundle.js': ['assets/coffee/**/*.coffee']
+          'public/javascripts/bundle.js': ['app/coffee/**/*.coffee']
 
     haml:
       all:
@@ -65,7 +65,7 @@ module.exports = (grunt) ->
           style: 'expanded'
         files: [
           expand: true,
-          cwd:'assets/views'
+          cwd:'app/views'
           src: '**/*.haml'
           dest: 'public/views'
           ext : '.html'
@@ -116,29 +116,25 @@ module.exports = (grunt) ->
 
     watch:
       coffee:
-        files: [ 'assets/coffee/**/*.coffee' ]
+        files: [ 'app/coffee/**/*.coffee' ]
         tasks: [ 'coffee:joined']
         options:
           spawn: false
           livereload: true
 
       sass:
-        files: ['assets/sass/**/*.sass']
+        files: ['app/sass/**/*.sass']
         tasks: [ 'sass']
         options:
           spawn: false
           livereload: true
 
       haml:
-        files: 'assets/views/**/*.haml'
+        files: 'app/views/**/*.haml'
         tasks: ['haml:all']
         options:
           spawn: false
           livereload: true
-
-
-
-
 
 
     bower_concat:

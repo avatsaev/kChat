@@ -2,8 +2,8 @@ app.factory 'Socket', [
   '$rootScope'
   ($rootScope) ->
 
-    socket = io("//kchat-backend-dev2.vuhavghkyx.us-west-2.elasticbeanstalk.com")
-
+    #socket = io("//kchat-backend-dev2.vuhavghkyx.us-west-2.elasticbeanstalk.com")
+    socket = io("//localhost:3002")
     {
       on: (eventName, callback) ->
         socket.on eventName, ->
@@ -17,6 +17,12 @@ app.factory 'Socket', [
           $rootScope.$apply ->
             if callback
               callback.apply socket, args
+
+      disconnect: ->
+        socket.disconnect()
+
+      remove_listener: (event) ->
+        socket.removeListener(event)
 
     }
 ]
