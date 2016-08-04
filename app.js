@@ -37,7 +37,7 @@ app.locals.config = {
   env: env,
   backend: {
     url: {
-      production: "//172.31.13.231",
+      production: process.env.BACKEND_ADDR,
       development: "//localhost:3002"
     }
   }
