@@ -37,7 +37,7 @@ app.locals.config = {
   env: env,
   backend: {
     url: {
-      production: process.env.BACKEND_ADDR,
+      production: "//kchat-backend-dev.us-east-1.elasticbeanstalk.com",
       development: "//localhost:3002"
     }
   }
